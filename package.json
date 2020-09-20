@@ -1,0 +1,62 @@
+{
+  "name": "ez-tournament",
+  "version": "0.0.1",
+  "description": "The simplest tournament management web application",
+  "main": "index.js",
+  "dependencies": {
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "fastify": "^2.12.0",
+    "fastify-swagger": "^2.5.0",
+    "i18next": "^19.7.0",
+    "nodemon": "^2.0.4",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-i18next": "^11.7.2",
+    "react-lineto": "^3.2.0",
+    "react-redux": "^7.2.0",
+    "react-router-dom": "^5.1.2",
+    "redux": "^4.0.5",
+    "redux-react-hook": "^4.0.1",
+    "redux-saga": "^1.1.3",
+    "serve-static": "^1.14.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "@babel/preset-react": "^7.8.3",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.4.2",
+    "file-loader": "^6.1.0",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.2.0",
+    "jest": "^25.1.0",
+    "standard": "^14.3.1",
+    "style-loader": "^1.1.3",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "scripts": {
+    "start": "node .",
+    "start:watch": "nodemon .",
+    "start:local": "npm run build:frontend && npm run start",
+    "test": "npm run test:server",
+    "test:server": "jest tests-server/",
+    "test:db": "jest plugins/db",
+    "test:frontend": "jest frontend/",
+    "test:frontend:watch": "jest --watch frontend/",
+    "start:frontend:dev": "webpack-dev-server --open --mode development",
+    "build": "npm run build:frontend",
+    "build:frontend": "webpack --mode production",
+    "build:frontend:dev": "set PORT=3000 && webpack --mode development --watch --progress",
+    "standard": "standard --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kamiljalowiczor/EZ-Tournament"
+  },
+  "author": "Kamil Jałowiczor",
+  "license": "MIT",
+  "homepage": ""
+}

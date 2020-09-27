@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { checkValidity } from '../../../NewTournament/validationUtils'
 import { Typography, Tooltip, IconButton, Box } from '@material-ui/core'
 import HelpIcon from '@material-ui/icons/Help'
 import InputField from '../../../Utils/InputField'

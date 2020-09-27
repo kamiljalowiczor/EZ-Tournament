@@ -42,6 +42,14 @@ module.exports = function ({ port }) {
     }
   )
 
+  app.register(require('./routes/newTournament'), {
+    prefix: '/api/v1/new-tournament'
+  })
+
+  app.register(require('./routes/checkUrl'), {
+    prefix: '/api/v1/check-url'
+  })
+
   app.register(require('./routes/catch-all/catch-all-api-404'), {
     prefix: '/api'
   })

@@ -1,6 +1,4 @@
 import React, { useEffect } from 'react'
-import { useDispatch } from 'redux-react-hook'
-import actionTypes from '../common/constants/actionTypes'
 import { makeStyles, Box, Grid, Typography, Button } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 
@@ -22,10 +20,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Home () {
   const classes = useStyles()
-  const dispatch = useDispatch()
-  useEffect(() => {
-    dispatch({ type: actionTypes.HOME_LOADED_ACTION })
-  }, [])
 
   return (
     <div className={classes.container}>

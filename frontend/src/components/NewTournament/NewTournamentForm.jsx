@@ -1,9 +1,26 @@
-import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core'
+import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { makeStyles, Button, Box } from '@material-ui/core'
 import InputField from '../Utils/InputField'
 import SectionCard from '../Utils/SectionCard'
 import BracketFormatRadioGroup from './BracketFormat/'
-import { checkValidity } from './validationUtils'
+import {
+  isFormValid
+} from './Utils/validation'
+import {
+  createFormElementsArray,
+  getInputFieldsData,
+  getUpdatedInputValue,
+  getUpdatedTouched,
+  getUpdatedCustomUrl,
+  getUpdatedUrlAvailabilityFlag
+} from './Utils/form'
+import { formFieldControls } from './formFieldControls'
+import {
+  newTournamentSubmit,
+  newTournamentUrlChange
+} from '../../data/actions/tournament/tournamentActions'
+import _ from 'lodash'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,119 +36,64 @@ const useStyles = makeStyles((theme) => ({
 
 export default function NewTournamentForm () {
   const classes = useStyles()
+  const dispatch = useDispatch()
 
   const [bracketFormat, setBracketFormat] = useState('singleElimination')
-  const [fieldControls, setFieldControls] = useState({
-    tournamentName: {
-      inputType: 'text',
-      value: '',
-      elementConfig: {
-        labelText: 'Tournament name',
-        placeholder: "Enter your tournament's name"
-      },
-      validation: {
-        required: true,
-        minLength: 3,
-        maxLength: 25
-      },
-      valid: false,
-      touched: false
-    },
-    description: {
-      inputType: 'text',
-      value: '',
-      elementConfig: {
-        labelText: 'Description',
-        placeholder: 'Enter description of this tournament (e.g. date, game, rules and prizes)',
-        multiline: true
-      },
-      validation: {
-        required: false,
-        minLength: 0,
-        maxLength: 1000
-      },
-      valid: true,
-      touched: false
-    },
-    host: {
-      inputType: 'text',
-      value: '',
-      elementConfig: {
-        labelText: 'Host',
-        placeholder: 'Who is hosting this tournament?'
-      },
-      validation: {
-        required: false,
-        minLength: 0,
-        maxLength: 50
-      },
-      valid: true,
-      touched: false
-    },
-    contact: {
-      inputType: 'text',
-      value: '',
-      elementConfig: {
-        labelText: 'Host contact info',
-        placeholder: 'How can participants contact you?'
-      },
-      validation: {
-        required: false,
-        minLength: 0,
-        maxLength: 50
-      },
-      valid: true,
-      touched: false
-    }
-  })
+  const [fieldControls, setFieldControls] = useState(formFieldControls)
 
-  function createFormElementsArray () {
-    const formElementsArray = []
-    for (const key in fieldControls) {
-      formElementsArray.push({
-        id: key,
-        config: fieldControls[key]
-      })
-    }
-    return formElementsArray
+  const formArray = createFormElementsArray(fieldControls)
+
+  const isUrlAvailable = useSelector(state => state.tournament.isUrlAvailable)
+  const isUrlCheckInProgress = useSelector(state => state.tournament.isUrlCheckInProgress)
+
+  useEffect(() => {
+    onUrlAvailabilityChange()
+  }, [isUrlAvailable, isUrlCheckInProgress])
+
+  const debouncedUrlCheck = React.useCallback(_.debounce((value) => {
+    dispatch(newTournamentUrlChange(value))
+  }, 500), [])
+
+  function onInputValueChange (value, fieldName) {
+    value = value.trim()
+
+    const updatedFieldControls = getUpdatedInputValue(value, fieldName, fieldControls)
+    setFieldControls(updatedFieldControls)
   }
 
-  function onInputValueChange (e, fieldName) {
-    const updatedFieldControls = {
-      ...fieldControls,
-      [fieldName]: {
-        ...fieldControls[fieldName],
-        value: e.target.value,
-        valid: checkValidity(e.target.value, fieldControls[fieldName].validation)
-      }
-    }
+  function onUrlAvailabilityChange () {
+    const updatedFieldControls = getUpdatedUrlAvailabilityFlag(fieldControls, isUrlAvailable)
+    setFieldControls(updatedFieldControls)
+  }
+
+  function onCustomUrlValueChange (value, fieldName) {
+    value = value.replace(/\s+$/, '')
+    debouncedUrlCheck(value)
+
+    const updatedFieldControls = getUpdatedCustomUrl(value, fieldName, fieldControls)
     setFieldControls(updatedFieldControls)
   }
 
   function setTouched (fieldName) {
-    const updatedFieldControls = {
-      ...fieldControls,
-      [fieldName]: {
-        ...fieldControls[fieldName],
-        touched: true
-      }
-    }
+    const updatedFieldControls = getUpdatedTouched(fieldName, fieldControls)
     setFieldControls(updatedFieldControls)
   }
 
-  function isFormValid () {
-    if (bracketFormat !== 'singleElimination' &&
-      bracketFormat !== 'doubleElimination' &&
-      bracketFormat !== 'roundRobin') {
-      return false
-    }
-
+  function updateErrorMessages () {
     for (const key in fieldControls) {
-      if (fieldControls[key].valid) {
-        return false
+      if (!fieldControls[key].valid) {
+        return setTouched(key)
       }
     }
-    return true
+  }
+
+  function handleFormSubmit () {
+    if (isFormValid(bracketFormat, fieldControls) && !isUrlCheckInProgress) {
+      const tournamentData = getInputFieldsData(bracketFormat, fieldControls)
+      dispatch(newTournamentSubmit(tournamentData))
+    } else {
+      updateErrorMessages()
+    }
   }
 
   function mapField (field) {
@@ -145,20 +107,17 @@ export default function NewTournamentForm () {
           id={field.id}
           autoFocus={field.config.autoFocus}
           validation={field.config.validation}
-          changed={(e) => { onInputValueChange(e, field.id) }}
+          changed={(e) => {
+            field.id === 'customUrl'
+              ? onCustomUrlValueChange(e.target.value, field.id)
+              : onInputValueChange(e.target.value, field.id)
+          }}
           touched={() => { setTouched(field.id) }}
-          error={field.config.validation.required && field.config.touched && !field.config.valid}
+          error={!field.config.valid && field.config.touched}
         />
       </div>
     )
   }
-
-  const formArray = createFormElementsArray()
-
-  console.log(bracketFormat)
-  console.log(fieldControls.tournamentName.value, fieldControls.host.value, fieldControls.contact.value, fieldControls.description.value)
-
-  isFormValid()
 
   return (
     <div className={classes.root}>
@@ -178,6 +137,11 @@ export default function NewTournamentForm () {
         {formArray.map(field => (
           mapField(field)
         ))}
+        <Box display='flex' justifyContent='center'>
+          <Button onClick={handleFormSubmit} className={classes.formControl} size='large' color='primary' variant='contained'>
+            Submit
+          </Button>
+        </Box>
       </SectionCard>
     </div>
   )

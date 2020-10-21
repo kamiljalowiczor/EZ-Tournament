@@ -14,8 +14,8 @@ const useStyles = makeStyles((theme) => ({
   root: {
     background: 'white'
   },
-  whiteColor: {
-    color: 'white'
+  blackColor: {
+    color: 'rgba(0, 0, 0, 0.87)'
   },
   select: {
     padding: theme.spacing(1)
@@ -46,8 +46,8 @@ export default function LanguageSelect () {
         onChange={(e) => changeLanguage(e.target.value)}
         displayEmpty
         classes={{
-          root: classes.whiteColor,
-          icon: classes.whiteColor,
+          root: classes.blackColor,
+          icon: classes.blackColor,
           select: classes.select
         }}
         inputProps={{

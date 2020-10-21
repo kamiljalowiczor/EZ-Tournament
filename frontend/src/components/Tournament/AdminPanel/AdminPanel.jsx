@@ -2,6 +2,7 @@ import React from 'react'
 import { Typography, Grid, makeStyles, Card } from '@material-ui/core'
 import Links from './Links'
 import AddParticipants from './AddParticipants'
+import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme) => ({
   panelItem: {
@@ -14,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function AdminPanel (props) {
+  const { t } = useTranslation()
   const classes = useStyles()
 
   return (
@@ -23,7 +25,7 @@ export default function AdminPanel (props) {
         variant='h4'
         style={{ marginBottom: '2rem' }}
       >
-        ADMIN PANEL
+        {t('tournament:admin-panel')}
       </Typography>
       <Grid
         container

@@ -1,6 +1,6 @@
 import React from 'react'
 import { FormControl, FormLabel, TextField, RadioGroup, makeStyles, createMuiTheme, MuiThemeProvider, FormHelperText } from '@material-ui/core'
-import { getMessageError } from '../../NewTournament/Utils/validation'
+import useFormValidation from '../../NewTournament/Utils/useFormValidation'
 
 const useStyles = makeStyles((theme) => ({
   formLabel: {
@@ -47,6 +47,7 @@ function getInputComponent (type, props) {
 }
 
 export default function InputField (props) {
+  const { getErrorMessage } = useFormValidation()
   const classes = useStyles()
 
   const fieldComponent = getInputComponent(props.type, { ...props })
@@ -56,7 +57,7 @@ export default function InputField (props) {
   if (props.error) {
     errorLabel = (
       <FormHelperText>
-        {getMessageError(props.validation)}
+        {getErrorMessage(props.validation)}
       </FormHelperText>
     )
   }

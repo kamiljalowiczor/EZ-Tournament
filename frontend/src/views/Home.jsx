@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { makeStyles, Box, Grid, Typography, Button } from '@material-ui/core'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -19,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function Home () {
+  const { t } = useTranslation()
   const classes = useStyles()
 
   return (
@@ -29,7 +31,7 @@ export default function Home () {
             EZ-Tournament
           </Typography>
           <Typography variant='h6'>
-            The simplest tournament management website
+            {t('home:site-description')}
           </Typography>
         </Grid>
         <Grid item xs={12}>
@@ -37,16 +39,16 @@ export default function Home () {
             <Grid item xs={6}>
               <Box display='flex' flexDirection='column' justify='center' alignItems='center'>
                 <Typography variant='subtitle1'>
-                  You are just a few clicks away from starting your tournament.
+                  {t('home:clicks-away')}
                 </Typography>
                 <Typography variant='h5'>
-                  No registration needed!
+                  {t('home:no-registration-needed')}
                 </Typography>
               </Box>
             </Grid>
             <Grid item xs={6}>
               <Button component={Link} to='/new' size='large' color='default' variant='outlined'>
-                Start your tournament now
+                {t('home:start-tournament')}
               </Button>
             </Grid>
           </Grid>

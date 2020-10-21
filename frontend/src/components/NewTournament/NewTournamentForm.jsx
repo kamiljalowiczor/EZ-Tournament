@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { makeStyles, Button, Box } from '@material-ui/core'
+import { makeStyles, Button, Box, Typography } from '@material-ui/core'
 import InputField from '../Utils/InputField'
 import SectionCard from '../Utils/SectionCard'
 import BracketFormatRadioGroup from './BracketFormat/'
-import {
-  isFormValid
-} from './Utils/validation'
+import useFormValidation from './Utils/useFormValidation'
 import {
   createFormElementsArray,
   getInputFieldsData,
@@ -15,12 +13,14 @@ import {
   getUpdatedCustomUrl,
   getUpdatedUrlAvailabilityFlag
 } from './Utils/form'
-import { formFieldControls } from './formFieldControls'
+import useFormFieldControls from './useFormFieldControls'
 import {
   newTournamentSubmit,
   newTournamentUrlChange
 } from '../../data/actions/tournament/tournamentActions'
 import _ from 'lodash'
+import { useTranslation } from 'react-i18next'
+import i18n from '../../i18n'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,11 +35,19 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function NewTournamentForm () {
+  const { t } = useTranslation()
   const classes = useStyles()
   const dispatch = useDispatch()
 
+  const { getFormFieldControls } = useFormFieldControls()
+  const {
+    isFormTouched,
+    isFormValid
+  } = useFormValidation()
+
   const [bracketFormat, setBracketFormat] = useState('singleElimination')
-  const [fieldControls, setFieldControls] = useState(formFieldControls)
+  const [fieldControls, setFieldControls] = useState(getFormFieldControls())
+  const [displayDataIncorrectLabel, setDisplayDataIncorrectLabel] = useState(true)
 
   const formArray = createFormElementsArray(fieldControls)
 
@@ -54,16 +62,35 @@ export default function NewTournamentForm () {
     dispatch(newTournamentUrlChange(value))
   }, 500), [])
 
+  i18n.on('languageChanged', () => {
+    const newFieldControls = getFormFieldControls()
+
+    for (const key in newFieldControls) {
+      newFieldControls[key].value = fieldControls[key].value
+      newFieldControls[key].touched = fieldControls[key].touched
+      newFieldControls[key].valid = fieldControls[key].valid
+    }
+
+    if (!isFormValid(fieldControls)) {
+      updateErrorMessages()
+    }
+
+    setFieldControls(newFieldControls)
+  })
+
   function onInputValueChange (value, fieldName) {
     value = value.trim()
 
     const updatedFieldControls = getUpdatedInputValue(value, fieldName, fieldControls)
     setFieldControls(updatedFieldControls)
+    console.log(isFormValid(bracketFormat, fieldControls), isFormTouched(fieldControls))
+    setDisplayDataIncorrectLabel(!isFormValid(bracketFormat, updatedFieldControls))
   }
 
   function onUrlAvailabilityChange () {
     const updatedFieldControls = getUpdatedUrlAvailabilityFlag(fieldControls, isUrlAvailable)
     setFieldControls(updatedFieldControls)
+    setDisplayDataIncorrectLabel(!isFormValid(bracketFormat, updatedFieldControls))
   }
 
   function onCustomUrlValueChange (value, fieldName) {
@@ -98,10 +125,12 @@ export default function NewTournamentForm () {
 
   function mapField (field) {
     return (
-      <div className={classes.formControl}>
+      <div
+        key={field.id}
+        className={classes.formControl}
+      >
         <InputField
           value={field.config.value}
-          key={field.id}
           type={field.config.inputType}
           elementConfig={field.config.elementConfig}
           id={field.id}
@@ -119,11 +148,23 @@ export default function NewTournamentForm () {
     )
   }
 
+  let incorrectDataLabel = null
+
+  if (displayDataIncorrectLabel) {
+    incorrectDataLabel = (
+      <Typography
+        color='error'
+        component='h6'
+      >
+        {t('form:incorrect-data')}
+      </Typography>
+    )
+  }
+
   return (
     <div className={classes.root}>
       <SectionCard
-        title='Bracket format'
-        subheader='dajemy czadu'
+        title={t('form:bracket-format')}
       >
         <BracketFormatRadioGroup
           value={bracketFormat}
@@ -131,16 +172,23 @@ export default function NewTournamentForm () {
         />
       </SectionCard>
       <SectionCard
-        title='Tournament information'
-        subheader='co i jak'
+        title={t('form:form-title')}
       >
         {formArray.map(field => (
           mapField(field)
         ))}
-        <Box display='flex' justifyContent='center'>
-          <Button onClick={handleFormSubmit} className={classes.formControl} size='large' color='primary' variant='contained'>
-            Submit
+        <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
+          <Button
+            onClick={handleFormSubmit}
+            className={classes.formControl}
+            size='large'
+            color='primary'
+            variant='contained'
+            disabled={displayDataIncorrectLabel}
+          >
+            {t('submit')}
           </Button>
+          {incorrectDataLabel}
         </Box>
       </SectionCard>
     </div>

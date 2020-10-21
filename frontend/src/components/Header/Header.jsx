@@ -2,7 +2,7 @@ import React from 'react'
 import PageLogo from './PageLogo'
 import LanguageSelect from './LanguageSelect'
 import SearchBar from './SearchBar'
-
+import { useTranslation } from 'react-i18next'
 import { AppBar, Toolbar, Box, makeStyles, Button } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function Header () {
+  const { t } = useTranslation()
   const classes = useStyles()
 
   return (
@@ -32,7 +33,7 @@ export default function Header () {
           className={classes.buttons}
         >
           <LanguageSelect />
-          <Button>Night mode</Button>
+          <Button>{t('night-mode')}</Button>
         </Box>
       </Toolbar>
     </AppBar>

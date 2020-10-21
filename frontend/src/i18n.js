@@ -4,7 +4,7 @@ import i18n from 'i18next'
 import translations from './common/locales'
 
 const ns = {
-  namespaces: [] // ' common', 'dashboard', 'hvac', 'authors'
+  namespaces: ['common', 'home', 'form', 'tournament']
 }
 
 i18n

@@ -11,6 +11,15 @@ export function isFormValid (bracketFormat, fieldControls) {
   return true
 }
 
+export function isFormTouched (fieldControls) {
+  for (const key in fieldControls) {
+    if (fieldControls[key].touched) {
+      return true
+    }
+  }
+  return false
+}
+
 export function checkValidity (value, rules) {
   console.log(value, rules.maxLength)
   let isValid = true

@@ -1,0 +1,25 @@
+{
+  "new-tournament": "NOWY TURNIEJ",
+  "fill-form": "Wypełnij formularz i rozpocznij turniej!",
+  "incorrect-data": "Wprowadzone dane są nieprawidłowe.",
+  "bracket-format": "Format drabinki",
+  "form-title": "Informacje o turnieju",
+
+  "field-required": "To pole jest wymagane.",
+  "url-taken": "Ten adres URL jest już zajęty. Spróbuj wybrać inny.",
+  "url-invalid": "Adres URL nie może zawierać spacji oraz znaków specjalnych innych niż - oraz _. ",
+  "invalid-length": "Wartość tego pola musi mieć przynajmniej {{minLength}} i maksymalnie {{maxLength}} znaków.",
+  "invalid-length-min": "Wartość tego pola musi mieć przynajmniej {{minLength}} znaków.",
+  "invalid-length-max": "Wartość tego pola musi mieć maksymalnie {{maxLength}} znaków.",
+
+  "label-name": "Nazwa turnieju",
+  "placeholder-name": "Wprowadź nazwę swojego turnieju",
+  "label-url": "Własny adres URL",
+  "placeholder-url": "Wprowadź swój unikalny link do turnieju",
+  "label-description": "Opis turnieju",
+  "placeholder-description": "Wprowadź informacje opisujące ten turniej (np. data, gra, zasady, nagrody)",
+  "label-host": "Host",
+  "placeholder-host": "Kto jest hostem turnieju?",
+  "label-contact": "Kontakt z hostem",
+  "placeholder-contact": "W jaki sposób uczestnicy będą mogli się z Tobą skontaktować?"
+}

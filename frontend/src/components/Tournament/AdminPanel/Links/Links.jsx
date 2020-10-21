@@ -2,6 +2,7 @@ import React from 'react'
 import { Grid, Typography, makeStyles, Tooltip, IconButton, createMuiTheme, MuiThemeProvider, Box } from '@material-ui/core'
 import HelpIcon from '@material-ui/icons/Help'
 import LinkToCopy from './LinkToCopy'
+import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme) => ({
   linkItem: {
@@ -17,10 +18,11 @@ const theme = createMuiTheme({
       }
     }
   }
-});
+})
 
 export default function Links (props) {
   const classes = useStyles()
+  const { t } = useTranslation()
 
   const {
     adminLink,
@@ -42,8 +44,11 @@ export default function Links (props) {
               alignItems='center'
               justifyContent='space-between'
             >
-              Link for participants
-              <Tooltip title='This is the link you can safely distribute to participants.' placement='top'>
+              {t('tournament:link-for-participants')}
+              <Tooltip
+                title={t('tournament:link-for-participants-tip')}
+                placement='top'
+              >
                 <IconButton aria-label='delete'>
                   <HelpIcon />
                 </IconButton>
@@ -59,10 +64,9 @@ export default function Links (props) {
               alignItems='center'
               justifyContent='space-between'
             >
-              Tournament admin link
+              {t('tournament:link-for-admin')}
               <Tooltip
-                title='You can access admin settings for this tournament under this link.
-                DO NOT SHARE THIS LINK WITH PARTICIPANTS UNLESS YOU WANT THEM TO HAVE ADMIN RIGHTS!'
+                title={t('tournament:link-for-admin-tip')}
                 placement='top'
               >
                 <IconButton aria-label='delete'>

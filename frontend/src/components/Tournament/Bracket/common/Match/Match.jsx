@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import BracketParticipant from '../BracketParticipant'
 import { Grid, makeStyles } from '@material-ui/core'
+import ReportMatchResult from '../ReportMatchResult'
 
 const useStyles = makeStyles((theme) => ({
   matchPair: {
@@ -11,15 +12,28 @@ const useStyles = makeStyles((theme) => ({
 
 const Match = React.forwardRef((props, ref) => {
   const classes = useStyles()
+  const [isModalOpen, setModalOpen] = useState(false)
+
+  const openModal = () => {
+    setModalOpen(true)
+  }
+
+  const closeModal = () => {
+    setModalOpen(false)
+  }
 
   return (
     <Grid ref={ref} className={classes.matchPair} container direction='column'>
-      <Grid item>
+      <Grid item onClick={openModal}>
         <BracketParticipant />
       </Grid>
-      <Grid item>
+      <Grid item onClick={openModal}>
         <BracketParticipant />
       </Grid>
+      <ReportMatchResult
+        isOpen={isModalOpen}
+        closeModal={closeModal}
+      />
     </Grid>
   )
 })

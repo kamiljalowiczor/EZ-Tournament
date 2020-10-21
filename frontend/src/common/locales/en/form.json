@@ -1,0 +1,25 @@
+{
+  "new-tournament": "NEW TOURNAMENT",
+  "fill-form": "Fill out the form and start your tournament!",
+  "incorrect-data": "The data you entered is incorrect.",
+  "bracket-format": "Bracket format",
+  "form-title": "Tournament information",
+
+  "field-required": "This field is required.",
+  "url-taken": "This URL is already taken. Please try a different one.",
+  "url-invalid": "Custom URL can't contain spaces and special characters other than - and _. ",
+  "invalid-length": "Value must be at least {{minLength}} and at most {{maxLength}} characters long.",
+  "invalid-length-min": "Value must be at least {{minLength}} characters long.",
+  "invalid-length-max": "Value must be at least {{maxLength}} characters long.",
+
+  "label-name": "Tournament name",
+  "placeholder-name": "Enter your tournament's name",
+  "label-url": "Custom URL",
+  "placeholder-url": "Enter custom link for this tournament",
+  "label-description": "Description",
+  "placeholder-description": "Enter description of this tournament (e.g. date, game, rules and prizes)",
+  "label-host": "Host",
+  "placeholder-host": "Who is hosting this tournament?",
+  "label-contact": "Host contact info",
+  "placeholder-contact": "How can participants contact you?"
+}

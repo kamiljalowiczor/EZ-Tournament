@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 import { Typography, Tooltip, IconButton, Box } from '@material-ui/core'
 import HelpIcon from '@material-ui/icons/Help'
 import InputField from '../../../Utils/InputField'
+import { useTranslation } from 'react-i18next'
 
 export default function AddParticipants () {
+  const { t } = useTranslation()
   const [inputValue, setInputValue] = useState('')
 
   function onInputValueChange (e) {
@@ -13,15 +15,18 @@ export default function AddParticipants () {
 
   const elementConfig = {
     multiline: true,
-    placeholder: 'Enter one participant per line or seperate them by commas. Enter them in certain order if you want to reorganize the bracket.'
+    placeholder: t('tournament:participants-input-tip')
   }
 
   return (
     <>
       <Box display='flex' alignItems='center'>
         <Typography variant='h6' style={{ marginBottom: '-1rem' }}>
-          Enter participants below
-          <Tooltip title='Enter one participant per line or seperate them by commas. Enter them in certain order if you want to reorganize the bracket.' placement='top'>
+          {t('tournament:enter-participants-below')}
+          <Tooltip
+            title={t('tournament:participants-input-tip')}
+            placement='top'
+          >
             <IconButton aria-label='delete'>
               <HelpIcon />
             </IconButton>

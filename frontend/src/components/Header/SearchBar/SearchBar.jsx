@@ -1,6 +1,7 @@
 import React from 'react'
 import { makeStyles, Box, Paper, InputBase } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
+import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme) => ({
   inputRoot: {
@@ -41,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function SearchBar () {
+  const { t } = useTranslation()
   const classes = useStyles()
 
   return (
@@ -50,7 +52,7 @@ export default function SearchBar () {
           <SearchIcon />
         </div>
         <InputBase
-          placeholder={'Enter tournament\'s name or url'}
+          placeholder={t('search-placeholder')}
           classes={{
             root: classes.inputRoot,
             input: classes.inputInput

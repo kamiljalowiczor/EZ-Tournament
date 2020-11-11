@@ -9,7 +9,7 @@ import Tournament from './views/Tournament.jsx'
 const App = (props) => (
   <Layout>
     <Switch>
-      <Route path='/t' component={Tournament} />
+      <Route path='/t/:publicLink' component={Tournament} />
       <Route path='/new' exact component={NewTournament} />
       <Route path='/' exact component={Home} />
       <Redirect to='/' />

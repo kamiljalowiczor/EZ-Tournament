@@ -1,9 +1,10 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { Grid, Typography, makeStyles } from '@material-ui/core'
+import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    marginBottom: '2rem',
     padding: '2rem'
   },
   mb2: {
@@ -19,27 +20,57 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TournamentInfo (props) {
   const classes = useStyles()
+  const { t } = useTranslation()
 
+  const {
+    tournamentInfo
+  } = useSelector((state) => state.tournament)
+
+  let name = null
+  let host = null
+  let contact = null
+  let description = null
+
+  if (tournamentInfo.name) {
+    name = (
+      <Typography variant='h4'>
+        {tournamentInfo.name}
+      </Typography>
+    )
+  }
+
+  if (tournamentInfo.host) {
+    host = (
+      <Typography variant='body1'>
+        {t('tournament:hosted-by')} {tournamentInfo.host}
+      </Typography>
+    )
+  }
+
+  if (tournamentInfo.contact) {
+    contact = (
+      <Typography variant='body1'>
+        {t('tournament:contact')} {tournamentInfo.contact}
+      </Typography>
+    )
+  }
+
+  if (tournamentInfo.description) {
+    description = (
+      <Typography className={classes.description} align='left' variant='body1'>
+        {tournamentInfo.description}
+      </Typography>
+    )
+  }
   return (
     <Grid container className={classes.root}>
-      <Grid className={classes.mb2} container item direction='column'>
-        <Typography variant='h4'>
-          {props.name}
-        </Typography>
-        <Typography className={classes.mb2} variant='h6'>
-          {props.format}
-        </Typography>
-        <Typography variant='body1'>
-          Hosted by: {props.host}
-        </Typography>
-        <Typography variant='body1'>
-          Contact: {props.contact}
-        </Typography>
+      <Grid className={description ? classes.mb2 : ''} container item direction='column'>
+        {name}
+        {host}
+        {contact}
       </Grid>
       <Grid className={classes.item} container item direction='column' alignItems='center'>
-        <Typography className={classes.description} align='left' variant='body1'>
-          {props.description}
-        </Typography>
+        {description}
       </Grid>
     </Grid>
   )

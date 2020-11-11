@@ -70,16 +70,15 @@ export function getUpdatedUrlAvailabilityFlag (fieldControls, isUrlAvailable) {
 
 export function getInputFieldsData (bracketFormat, fieldControls) {
   const name = fieldControls.name.value
-  const descrption = fieldControls.description.value
+  const description = fieldControls.description.value
   const host = fieldControls.host.value
   const contact = fieldControls.contact.value
   const customUrl = fieldControls.customUrl.value
 
   return {
-    format: bracketFormat,
     name,
     customUrl,
-    descrption,
+    description,
     host,
     contact
   }

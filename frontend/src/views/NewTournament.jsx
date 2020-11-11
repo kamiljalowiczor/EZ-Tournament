@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: '5rem',
+    marginBottom: '2rem',
     textAlign: 'center'
   },
   card: {

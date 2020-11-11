@@ -1,5 +1,8 @@
 {
   "night-mode": "TRYB NOCNY",
   "search-placeholder": "Wprowadź nazwę turnieju lub jego url",
-  "submit": "ZACZYNAMY!"
+  "submit": "ZACZYNAMY!",
+  "copy": "Kopiuj",
+  "something-went-wrong": "Coś poszło nie tak. Możliwe, że turniej którego szukasz nie istnieje.",
+  "back-to-main-page": "Wróć do strony głównej"
 }

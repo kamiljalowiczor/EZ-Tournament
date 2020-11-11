@@ -2,15 +2,27 @@
   "admin-panel": "PANEL ADMINA",
   "enter-participants-below": "Wprowadź uczestników poniżej",
   "participants-input-tip": "Wprowadź jednego uczestnika w wierszu, lub oddziel ich przecinkami. Kolejność wprowadzania uczestników ma wpływ na organizacje drabinki.",
+  "rounds": "Rundy",
+  "participants": "Uczestnicy",
   
   "link-for-participants": "Link dla uczestników",
-  "link-for-paricipants-tip": "Ten link możesz bez obaw wysłać do uczestników.",
+  "link-for-participants-tip": "Ten link możesz bez obaw wysłać do uczestników.",
   "link-for-admin": "Link admina turnieju",
   "link-for-admin-tip": "Pod tym linkiem uzyskasz dostęp do panelu admina. NIE WYSYŁAJ TEGO LINKU DO UCZESTNIKÓW JEŻELI NIE CHCESZ ŻEBY MIELI UPRAWNIENIA ADMINA!",
+  "draw-bracket": "Podgląd drabinki",
+  "start-tournament": "Rozpocznij turniej",
+
+  "hosted-by": "Organizator:",
+  "contact": "Kontakt:",
 
   "winner": "ZWYCIĘZCA",
   "draws": "Remisy nie są akceptowane w drabinkach",
   "who-won": "Kto wygrał?",
   "fill-scores": "Uzupełnij wynik tego meczu",
-  "save-changes": "Zapisz zmiany"
+  "save-changes": "Zapisz zmiany",
+
+  "round": "RUNDA",
+  "quarterfinals": "ĆWIERĆFINAŁY",
+  "semifinals": "PÓŁFINAŁY",
+  "final": "FINAŁ"
 }

@@ -1,8 +1,10 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { Typography, Grid, makeStyles, Card } from '@material-ui/core'
 import Links from './Links'
 import AddParticipants from './AddParticipants'
 import { useTranslation } from 'react-i18next'
+import history from '../../../history'
 
 const useStyles = makeStyles((theme) => ({
   panelItem: {
@@ -17,6 +19,14 @@ const useStyles = makeStyles((theme) => ({
 export default function AdminPanel (props) {
   const { t } = useTranslation()
   const classes = useStyles()
+
+  const {
+    adminLink
+  } = useSelector(state => state.tournament.tournamentInfo)
+
+  if (!adminLink) {
+    return null
+  }
 
   return (
     <Card variant='outlined' className={classes.card}>
@@ -33,13 +43,13 @@ export default function AdminPanel (props) {
         justify='center'
         alignItems='center'
       >
-        <Grid className={classes.panelItem} item md={8}>
+        <Grid className={classes.panelItem} item md={7}>
           <AddParticipants />
         </Grid>
-        <Grid className={classes.panelItem} item md={4}>
+        <Grid className={classes.panelItem} item md={5}>
           <Links
-            adminLink='witamAdmina'
-            participantLink='witamParticipant'
+            adminLink={history.location.pathname + history.location.search}
+            participantLink={history.location.pathname}
           />
         </Grid>
       </Grid>

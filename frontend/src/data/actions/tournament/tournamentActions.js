@@ -52,3 +52,68 @@ export function newTournamentUrlChangeNotAvailable () {
     type: tournamentActionTypes.NEW_TOURNAMENT_URL_CHANGE_NOT_AVAILABLE
   }
 }
+
+export function loadTournament () {
+  return {
+    type: tournamentActionTypes.LOAD_TOURNAMENT
+  }
+}
+
+export function loadTournamentStart () {
+  return {
+    type: tournamentActionTypes.LOAD_TOURNAMENT_START
+  }
+}
+
+export function loadTournamentSuccess (tournamentData) {
+  return {
+    type: tournamentActionTypes.LOAD_TOURNAMENT_SUCCESS,
+    tournamentData
+  }
+}
+
+export function loadTournamentFail (error) {
+  return {
+    type: tournamentActionTypes.LOAD_TOURNAMENT_FAIL,
+    error
+  }
+}
+
+export function participantInputChangeAction (value) {
+  return {
+    type: tournamentActionTypes.TOURNAMENT_PARTICIPANTS_INPUT_CHANGE,
+    value
+  }
+}
+
+export function drawBracketAction () {
+  return {
+    type: tournamentActionTypes.TOURNAMENT_DRAW_BRACKET
+  }
+}
+
+export function startTournament () {
+  return {
+    type: tournamentActionTypes.START_TOURNAMENT
+  }
+}
+
+export function startTournamentStart () {
+  return {
+    type: tournamentActionTypes.START_TOURNAMENT_START
+  }
+}
+
+export function startTournamentSuccess (bracketData) {
+  return {
+    type: tournamentActionTypes.START_TOURNAMENT_SUCCESS,
+    bracketData
+  }
+}
+
+export function startTournamentFail (error) {
+  return {
+    type: tournamentActionTypes.START_TOURNAMENT_FAIL,
+    error
+  }
+}

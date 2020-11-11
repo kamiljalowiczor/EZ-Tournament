@@ -1,5 +1,8 @@
 {
   "night-mode": "NIGHT MODE",
   "search-placeholder": "Enter tournament's name or url",
-  "submit": "LET'S GO!"
+  "submit": "LET'S GO!",
+  "copy": "Copy",
+  "something-went-wrong": "Something went wrong. Possibly no such tournament exists.",
+  "back-to-main-page": "Back to main page"
 }

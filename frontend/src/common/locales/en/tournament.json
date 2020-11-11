@@ -2,15 +2,27 @@
   "admin-panel": "ADMIN PANEL",
   "enter-participants-below": "Enter participants below",
   "participants-input-tip": "Enter one participant per line or seperate them by commas. Enter them in certain order if you want to reorganize the bracket.",
-  
+  "rounds": "Rounds",
+  "participants": "Participants",
+
   "link-for-participants": "Link for participants",
   "link-for-participants-tip": "This is the link you can safely distribute to participants.",
   "link-for-admin": "Tournament admin link",
   "link-for-admin-tip": "You can access admin settings for this tournament under this link. DO NOT SHARE THIS LINK WITH PARTICIPANTS UNLESS YOU WANT THEM TO HAVE ADMIN RIGHTS!",
+  "draw-bracket": "Draw bracket",
+  "start-tournament": "Start tournament",
+
+  "hosted-by": "Hosted by:",
+  "contact": "Contact:",
 
   "winner": "WINNER",
   "draws": "Draws are not accepted in brackets",
   "who-won": "Who won?",
   "fill-scores": "Fill the scores for this match",
-  "save-changes": "Save changes"
+  "save-changes": "Save changes",
+
+  "round": "ROUND",
+  "quarterfinals": "QUARTERFINALS",
+  "semifinals": "SEMIFINALS",
+  "final": "FINAL"
 }

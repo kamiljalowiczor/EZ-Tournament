@@ -43,21 +43,31 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function BracketParticipant () {
+export default function BracketParticipant ({ participant }) {
   const classes = useStyles()
+
+  let participantId = null
+  let participantName = null
+  let participantScore = null
+
+  if (participant) {
+    participantId = participant.id
+    participantName = participant.name
+    participantScore = participant.score
+  }
 
   return (
     <Paper variant='outlined' square className={classes.root}>
       <Typography
         className={`${classes.participantNumbers} ${classes.playerId} ${classes.fontSize}`}
       >
-        127
+        {participantId}
       </Typography>
-      <Typography className={`${classes.playerName} ${classes.fontSize}`}>pudzian997pl</Typography>
+      <Typography className={`${classes.playerName} ${classes.fontSize}`}>{participantName}</Typography>
       <Typography
         className={`${classes.participantNumbers} ${classes.score} ${classes.fontSize}`}
       >
-        2
+        {participantScore}
       </Typography>
     </Paper>
   )

@@ -28,13 +28,7 @@ export default function NextRoundMatchesConnector (props) {
       setLineHeight(refMatch2.current.getBoundingClientRect().y - refMatch1.current.getBoundingClientRect().y)
     }
     setLineTopOffset(desiredOffset)
-  }, [])
-
-  useEffect(() => {
-    if (!props.isFinal && props.spaceBetweenMatches) {
-      setLineHeight(props.spaceBetweenMatches)
-    }
-  }, [props.spaceBetweenMatches])
+  })
 
   const containerClassName = `${classes.root} ${props.isLastInColumn ? '' : classes.marginBottom}`
 
@@ -45,14 +39,19 @@ export default function NextRoundMatchesConnector (props) {
       direction='column'
     >
       <Grid item>
-        <Match ref={refMatch1} />
+        <Match
+          ref={refMatch1}
+          participants={props.matchOneParticipants}
+        />
         <div className={classes.marginBottom} />
-        {props.isFinal ? null : <Match ref={refMatch2} />}
+        {props.isFinal
+          ? null
+          : <Match ref={refMatch2} participants={props.matchTwoParticipants} />}
       </Grid>
       <Grid item xs={12}>
         <SingleEliminationLine
           topOffset={lineTopOffset}
-          height={lineHeight}
+          height={props.isFinal ? '0' : lineHeight}
           width='30'
         />
       </Grid>

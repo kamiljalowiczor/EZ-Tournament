@@ -1,17 +1,30 @@
-import React, { useState } from 'react'
-import { Typography, Tooltip, IconButton, Box } from '@material-ui/core'
+import React from 'react'
+import { Typography, Tooltip, IconButton, Box, Button, makeStyles } from '@material-ui/core'
 import HelpIcon from '@material-ui/icons/Help'
 import InputField from '../../../Utils/InputField'
 import { useTranslation } from 'react-i18next'
+import useAddParticipants from './useAddParticipants'
+import { getAmountOfRounds } from '../../Bracket/common/Utils/bracketMathUtils'
+
+const useStyles = makeStyles((theme) => ({
+  button: {
+    margin: '0.5rem 0.25rem'
+  }
+}))
 
 export default function AddParticipants () {
   const { t } = useTranslation()
-  const [inputValue, setInputValue] = useState('')
+  const classes = useStyles()
 
-  function onInputValueChange (e) {
-    const value = e.target.value.trim()
-    setInputValue(value)
-  }
+  const {
+    onParticipantsInputChange,
+    onDrawBracketClick,
+    getAmountOfEnteredParticipants,
+    onStartTournamentClick
+  } = useAddParticipants()
+
+  const amountOfParticipants = getAmountOfEnteredParticipants()
+  const roundsAmount = amountOfParticipants ? getAmountOfRounds(amountOfParticipants) : 0
 
   const elementConfig = {
     multiline: true,
@@ -20,7 +33,7 @@ export default function AddParticipants () {
 
   return (
     <>
-      <Box display='flex' alignItems='center'>
+      <Box display='flex' alignItems='center' justifyContent='space-between'>
         <Typography variant='h6' style={{ marginBottom: '-1rem' }}>
           {t('tournament:enter-participants-below')}
           <Tooltip
@@ -32,14 +45,41 @@ export default function AddParticipants () {
             </IconButton>
           </Tooltip>
         </Typography>
+        <Box style={{ textAlign: 'right' }}>
+          <Typography variant='body2' display='block'>
+            {`${t('tournament:participants')}: ${amountOfParticipants} / ${Math.pow(2, roundsAmount)}`}
+          </Typography>
+          <Typography variant='body2' display='block'>
+            {`${t('tournament:rounds')}: ${roundsAmount}`}
+          </Typography>
+        </Box>
       </Box>
       <InputField
-        value={inputValue}
         type='textarea'
-        changed={(e) => { onInputValueChange(e) }}
+        changed={(e) => { onParticipantsInputChange(e) }}
         elementConfig={elementConfig}
         name='Enter participants'
       />
+      <div>
+        <Button
+          variant='contained'
+          color='primary'
+          onClick={onDrawBracketClick}
+          className={classes.button}
+          disabled={roundsAmount < 1}
+        >
+          {t('tournament:draw-bracket')}
+        </Button>
+        <Button
+          variant='contained'
+          color='primary'
+          className={classes.button}
+          onClick={onStartTournamentClick}
+          disabled={roundsAmount < 1}
+        >
+          {t('tournament:start-tournament')}
+        </Button>
+      </div>
     </>
   )
 }

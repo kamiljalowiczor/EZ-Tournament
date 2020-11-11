@@ -6,6 +6,8 @@ module.exports = function ({ port }) {
 
   app.use('/', serveStatic(path.join(__dirname, '..', 'frontend', 'dist')))
 
+  app.register(require('./plugins/env'))
+
   app.register(
     (instance, opts, next) => {
       instance
@@ -42,10 +44,11 @@ module.exports = function ({ port }) {
     }
   )
 
-  app.register(require('./routes/newTournament'), {
-    prefix: '/api/v1/new-tournament'
+  app.register(require('./routes/tournaments/tournament'), {
+    prefix: '/api/v1/tournaments'
   })
 
+  // TO DO WYRZUCENIA BO PRZECIEZ MOZNA ODPYTYWAC /tournaments/:id I JAK NIE ZWROCI NIC TO NIE MA TAKIEGO URL
   app.register(require('./routes/checkUrl'), {
     prefix: '/api/v1/check-url'
   })

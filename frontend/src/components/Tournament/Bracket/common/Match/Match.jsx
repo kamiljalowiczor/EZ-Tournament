@@ -25,10 +25,10 @@ const Match = React.forwardRef((props, ref) => {
   return (
     <Grid ref={ref} className={classes.matchPair} container direction='column'>
       <Grid item onClick={openModal}>
-        <BracketParticipant />
+        <BracketParticipant participant={props.participants[0]} />
       </Grid>
       <Grid item onClick={openModal}>
-        <BracketParticipant />
+        <BracketParticipant participant={props.participants[1]} />
       </Grid>
       <ReportMatchResult
         isOpen={isModalOpen}

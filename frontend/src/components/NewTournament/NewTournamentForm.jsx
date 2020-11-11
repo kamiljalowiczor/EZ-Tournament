@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function NewTournamentForm () {
+export default function NewTournamentForm (props) {
   const { t } = useTranslation()
   const classes = useStyles()
   const dispatch = useDispatch()

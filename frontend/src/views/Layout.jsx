@@ -4,8 +4,8 @@ import Header from '../components/Header'
 
 const useStyles = makeStyles(theme => ({
   content: {
-    boxSizing: 'border-box'
-    // backgroundColor: theme.palette.background.default
+    boxSizing: 'border-box',
+    minHeight: '100vh'
   }
 }))
 

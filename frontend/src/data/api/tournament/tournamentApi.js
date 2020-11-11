@@ -1,30 +1,40 @@
 import axios from 'axios'
-import { delay } from 'redux-saga/effects'
 
 export function * submitNewTournament (tournamentData) {
   const config = { headers: { 'Content-Type': 'application/json' } }
-  const res = yield axios.post('api/v1/new-tournament', tournamentData, config)
+  const res = yield axios.post('api/v1/tournaments', tournamentData, config)
 
-  // return res
-  // const res = {
-  //   id: 1,
-  //   format: 'single elimination',
-  //   name: 'puchar swiata',
-  //   description: 'swietny puchar zapraszamy',
-  //   host: 'pudzian',
-  //   contact: 'pudzian@firma.pl'
-  // }
-
-  yield delay(4000)
-
-  return res
+  return res.data
 }
 
 export function * isUrlAvailable (url) {
-  const data = {
+  const reqData = {
     id: url
   }
   const config = { headers: { 'Content-Type': 'application/json' } }
-  const res = yield axios.post('/api/v1/check-url', data, config)
+  const res = yield axios.post('/api/v1/check-url', reqData, config)
   return res
+}
+
+export function * loadTournament (publicLink, adminId) {
+  const reqData = {
+    adminId
+  }
+
+  const res = yield axios.get(`/api/v1/tournaments/${publicLink}`, { params: reqData })
+
+  return res.data
+}
+
+export function * startTournament (publicLink, participants) {
+  const reqData = {
+    participants
+  }
+
+  console.log(reqData)
+
+  const config = { headers: { 'Content-Type': 'application/json' } }
+  const res = yield axios.post(`/api/v1/tournaments/${publicLink}/bracket`, reqData, config)
+
+  return res.data
 }

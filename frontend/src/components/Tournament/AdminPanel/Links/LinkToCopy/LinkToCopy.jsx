@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { FormControl, OutlinedInput, InputAdornment, Button, makeStyles, Tooltip } from '@material-ui/core'
+import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme) => ({
   offscreen: {
@@ -12,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function LinkToCopy ({ link }) {
+  const { t } = useTranslation()
   const classes = useStyles()
 
   const [isTooltipOpen, setTooltipOpen] = useState(false)
@@ -50,7 +52,7 @@ export default function LinkToCopy ({ link }) {
                 onClick={copyToClipboard}
                 edge='end'
               >
-                Copy
+                {t('copy')}
               </Button>
             </Tooltip>
           </InputAdornment>
@@ -58,7 +60,7 @@ export default function LinkToCopy ({ link }) {
       />
       <textarea
         ref={textArea}
-        defaultValue={link}
+        defaultValue={window.location.href}
         className={classes.offscreen}
         aria-hidden='true'
       />

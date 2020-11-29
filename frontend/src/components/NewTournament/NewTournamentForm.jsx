@@ -21,6 +21,7 @@ import {
 import _ from 'lodash'
 import { useTranslation } from 'react-i18next'
 import i18n from '../../i18n'
+import Spinner from '../Utils/Spinner'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,12 +48,13 @@ export default function NewTournamentForm (props) {
 
   const [bracketFormat, setBracketFormat] = useState('singleElimination')
   const [fieldControls, setFieldControls] = useState(getFormFieldControls())
-  const [displayDataIncorrectLabel, setDisplayDataIncorrectLabel] = useState(true)
+  const [shouldDisplayDataIncorrectLabel, setShouldDisplayDataIncorrectLabel] = useState(true)
 
   const formArray = createFormElementsArray(fieldControls)
 
   const isUrlAvailable = useSelector(state => state.tournament.isUrlAvailable)
   const isUrlCheckInProgress = useSelector(state => state.tournament.isUrlCheckInProgress)
+  const isSubmittingNewTournament = useSelector(state => state.tournament.isSubmittingNewTournament)
 
   useEffect(() => {
     onUrlAvailabilityChange()
@@ -79,18 +81,16 @@ export default function NewTournamentForm (props) {
   })
 
   function onInputValueChange (value, fieldName) {
-    value = value.trim()
-
     const updatedFieldControls = getUpdatedInputValue(value, fieldName, fieldControls)
     setFieldControls(updatedFieldControls)
     console.log(isFormValid(bracketFormat, fieldControls), isFormTouched(fieldControls))
-    setDisplayDataIncorrectLabel(!isFormValid(bracketFormat, updatedFieldControls))
+    setShouldDisplayDataIncorrectLabel(!isFormValid(bracketFormat, updatedFieldControls))
   }
 
   function onUrlAvailabilityChange () {
     const updatedFieldControls = getUpdatedUrlAvailabilityFlag(fieldControls, isUrlAvailable)
     setFieldControls(updatedFieldControls)
-    setDisplayDataIncorrectLabel(!isFormValid(bracketFormat, updatedFieldControls))
+    setShouldDisplayDataIncorrectLabel(!isFormValid(bracketFormat, updatedFieldControls))
   }
 
   function onCustomUrlValueChange (value, fieldName) {
@@ -150,7 +150,7 @@ export default function NewTournamentForm (props) {
 
   let incorrectDataLabel = null
 
-  if (displayDataIncorrectLabel) {
+  if (shouldDisplayDataIncorrectLabel) {
     incorrectDataLabel = (
       <Typography
         color='error'
@@ -163,14 +163,14 @@ export default function NewTournamentForm (props) {
 
   return (
     <div className={classes.root}>
-      <SectionCard
+      {/* <SectionCard
         title={t('form:bracket-format')}
       >
         <BracketFormatRadioGroup
           value={bracketFormat}
           changed={setBracketFormat}
         />
-      </SectionCard>
+      </SectionCard> */}
       <SectionCard
         title={t('form:form-title')}
       >
@@ -184,7 +184,10 @@ export default function NewTournamentForm (props) {
             size='large'
             color='primary'
             variant='contained'
-            disabled={displayDataIncorrectLabel}
+            disabled={
+              shouldDisplayDataIncorrectLabel || isSubmittingNewTournament
+            }
+            endIcon={isSubmittingNewTournament ? <Spinner size={26} /> : null}
           >
             {t('submit')}
           </Button>

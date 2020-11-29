@@ -1,7 +1,7 @@
 {
   "admin-panel": "PANEL ADMINA",
   "enter-participants-below": "Wprowadź uczestników poniżej",
-  "participants-input-tip": "Wprowadź jednego uczestnika w wierszu, lub oddziel ich przecinkami. Kolejność wprowadzania uczestników ma wpływ na organizacje drabinki.",
+  "participants-input-tip": "Wprowadź jednego uczestnika w wierszu, lub oddziel ich przecinkami. Kolejność wprowadzania uczestników ma wpływ na organizacje drabinki. Maksymalna ilość uczestników wynosi 256.",
   "rounds": "Rundy",
   "participants": "Uczestnicy",
   
@@ -9,7 +9,7 @@
   "link-for-participants-tip": "Ten link możesz bez obaw wysłać do uczestników.",
   "link-for-admin": "Link admina turnieju",
   "link-for-admin-tip": "Pod tym linkiem uzyskasz dostęp do panelu admina. NIE WYSYŁAJ TEGO LINKU DO UCZESTNIKÓW JEŻELI NIE CHCESZ ŻEBY MIELI UPRAWNIENIA ADMINA!",
-  "draw-bracket": "Podgląd drabinki",
+  "add-participants": "Dodaj uczestników",
   "start-tournament": "Rozpocznij turniej",
 
   "hosted-by": "Organizator:",
@@ -20,6 +20,15 @@
   "who-won": "Kto wygrał?",
   "fill-scores": "Uzupełnij wynik tego meczu",
   "save-changes": "Zapisz zmiany",
+  "walkover": "{{winner}} wygrywa walkowerem z powodu braku przeciwnika w tej rundzie.",
+  "in-progress": "Turniej w toku",
+  "in-progress-message": "Możesz teraz uzpełniać wyniki meczów.",
+  "finished-message": "Turniej zakończony",
+
+  "bracket": "DRABINKA",
+  "not-started": "Ten turniej jeszcze się nie zaczął.",
+  "admin-add-participants-reminder": "Dodaj uczestników turnieju, żeby zobaczyć podgląd drabinki. Po rozpoczęciu turnieju nie będzie możliwości ich dodawania lub usuwania.",
+  "update-error": "Wystąpił błąd podczas aktualizacji drabinki. Spróbuj ponownie.",
 
   "round": "RUNDA",
   "quarterfinals": "ĆWIERĆFINAŁY",

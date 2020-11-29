@@ -1,6 +1,12 @@
 const axios = require('axios')
 const short = require('short-uuid')
 
+const tournamentStatusTypes = {
+  NOT_STARTED: 'NOT_STARTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  FINISHED: 'FINISHED'
+}
+
 async function newTournament (req, reply) {
   let payload = null
   const databaseUrl = this.config.DATABASE_URL
@@ -29,17 +35,25 @@ async function newTournament (req, reply) {
   const adminLink = short.generate()
 
   const tournamentData = {
-    publicLink,
-    adminLink,
-    name: req.body.name,
-    host: req.body.host,
-    description: req.body.description,
-    contact: req.body.contact
+    info: {
+      publicLink,
+      adminLink,
+      name: req.body.name,
+      host: req.body.host,
+      description: req.body.description,
+      contact: req.body.contact
+    },
+    bracket: {
+      progressStatus: tournamentStatusTypes.NOT_STARTED,
+      roundsAmount: 0,
+      participants: [],
+      rounds: []
+    }
   }
 
   payload = tournamentData
 
-  await axios.put(`${databaseUrl}/tournaments/${publicLink}/info.json?`, tournamentData)
+  await axios.put(`${databaseUrl}/tournaments/${publicLink}.json`, tournamentData)
     .then(() => {
       payload = tournamentData
       reply.code(200)
@@ -60,7 +74,7 @@ async function getTournament (req, reply) {
   const adminId = req.query.adminId
 
   let tournamentData
-  await axios.get(`${databaseUrl}/tournaments/${tournamentId}.json`)
+  await axios.get(`${databaseUrl}/tournaments/${tournamentId}.json`, { headers: { 'Content-Type': 'text/plain' } })
     .then((dbRes) => {
       tournamentData = dbRes.data
     })
@@ -73,11 +87,14 @@ async function getTournament (req, reply) {
     tournamentData.info.adminLink = ''
   }
 
+  console.log(tournamentData)
+
   payload = tournamentData
   reply.send(payload)
 }
 
 module.exports = {
   newTournament,
-  getTournament
+  getTournament,
+  tournamentStatusTypes
 }

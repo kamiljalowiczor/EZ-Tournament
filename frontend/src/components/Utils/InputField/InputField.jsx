@@ -32,6 +32,7 @@ function getInputComponent (type, props) {
       onChange={(e) => { props.changed(e) }}
       onBlur={(e) => { if (props.touched) props.touched(e) }}
       variant='outlined'
+      value={props.value}
     />
   )
 

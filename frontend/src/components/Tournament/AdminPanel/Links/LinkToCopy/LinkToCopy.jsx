@@ -8,7 +8,8 @@ const useStyles = makeStyles((theme) => ({
     left: '-999em'
   },
   link: {
-    margin: '0.25rem 0rem'
+    margin: '0.25rem 0rem',
+    width: '100%'
   }
 }))
 

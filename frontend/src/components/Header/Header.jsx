@@ -3,19 +3,18 @@ import PageLogo from './PageLogo'
 import LanguageSelect from './LanguageSelect'
 import SearchBar from './SearchBar'
 import { useTranslation } from 'react-i18next'
-import { AppBar, Toolbar, Box, makeStyles, Button } from '@material-ui/core'
+import { AppBar, Toolbar, Grid, makeStyles, Button } from '@material-ui/core'
+import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
-    minHeight: theme.spacing(6),
-    alignItems: 'center',
-    justifyContent: 'space-between'
+    minHeight: theme.spacing(6)
+
   },
   buttons: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    minWidth: '200px',
     minHeight: theme.spacing(7)
   }
 }))
@@ -26,15 +25,28 @@ export default function Header () {
 
   return (
     <AppBar color='default' position='fixed' data-testid='header-id'>
-      <Toolbar className={classes.toolbar}>
-        <PageLogo />
-        <SearchBar />
-        <Box
+      <Toolbar className={classes.toolbar} variant='dense'>
+        <Grid item xs={4}>
+          <PageLogo />
+        </Grid>
+        <Grid item xs={4}>
+          <SearchBar />
+        </Grid>
+        <Grid
+          item
+          xs={4}
           className={classes.buttons}
         >
+          <Button
+            component={Link}
+            to='/new'
+            color='primary'
+            variant='contained'
+          >
+            {t('new-tournament')}
+          </Button>
           <LanguageSelect />
-          <Button>{t('night-mode')}</Button>
-        </Box>
+        </Grid>
       </Toolbar>
     </AppBar>
   )

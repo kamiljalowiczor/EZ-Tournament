@@ -5,6 +5,7 @@ import Links from './Links'
 import AddParticipants from './AddParticipants'
 import { useTranslation } from 'react-i18next'
 import history from '../../../history'
+import { tournamentStatusTypes } from '../../../../../src/routes/tournaments/tournamentService'
 
 const useStyles = makeStyles((theme) => ({
   panelItem: {
@@ -23,9 +24,36 @@ export default function AdminPanel (props) {
   const {
     adminLink
   } = useSelector(state => state.tournament.tournamentInfo)
+  const tournamentProgressStatus = useSelector(state => state.tournament.bracket.progressStatus)
 
   if (!adminLink) {
     return null
+  }
+
+  let leftSideContent = (
+    <>
+      <Typography variant='h5'>
+        {t('tournament:in-progress')}
+      </Typography>
+      <Typography variant='body1'>
+        {t('tournament:in-progress-message')}
+      </Typography>
+    </>
+  )
+
+  if (tournamentProgressStatus === tournamentStatusTypes.NOT_STARTED) {
+    leftSideContent = <AddParticipants />
+  } else if (tournamentProgressStatus === tournamentStatusTypes.FINISHED) {
+    leftSideContent = (
+      <>
+        <Typography variant='body1'>
+          {t('tournament:finished-message')}
+        </Typography>
+        <Typography variant='h5'>
+          GG WP
+        </Typography>
+      </>
+    )
   }
 
   return (
@@ -37,16 +65,20 @@ export default function AdminPanel (props) {
       >
         {t('tournament:admin-panel')}
       </Typography>
+      TODO: ZAPIS ZAWODNIKOW DO FIREBASEA, UZUPELNIONY O WSZYSTKIE TE GLUPOTY TAKIE TYPU ID I SCORE,
+      WCZYTYWANIE TYCH ZAWODNIKOW Z BAZY DO INPUTA OD RAZU NA ZALADOWANIU,
+      UPDATE SCOREOW,
+      ZROBIENIE CHECK URLA Z BAZY
       <Grid
         container
         direction='row'
         justify='center'
         alignItems='center'
       >
-        <Grid className={classes.panelItem} item md={7}>
-          <AddParticipants />
+        <Grid className={classes.panelItem} item md={6}>
+          {leftSideContent}
         </Grid>
-        <Grid className={classes.panelItem} item md={5}>
+        <Grid className={classes.panelItem} item md={6}>
           <Links
             adminLink={history.location.pathname + history.location.search}
             participantLink={history.location.pathname}

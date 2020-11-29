@@ -8,16 +8,21 @@ import {
   loadTournamentStart,
   loadTournamentFail,
   loadTournamentSuccess,
-  startTournamentStart,
-  startTournamentSuccess,
-  startTournamentFail
+  updateBracketStart,
+  updateBracketSuccess,
+  updateBracketFail,
+  reportMatchScoreStart,
+  reportMatchScoreSuccess,
+  reportMatchScoreFail,
+  reportMatchScoreEndTournament
 } from '../../actions/tournament/tournamentActions'
 import { put, call, delay, race, select } from 'redux-saga/effects'
 import {
   submitNewTournament,
   isUrlAvailable,
   loadTournament,
-  startTournament
+  updateBracket,
+  reportMatchScore
 } from '../../api/tournament/tournamentApi'
 import history from '../../../history'
 import { getParticipantsArray } from '../../reducers/utils/tournamentUtils'
@@ -45,15 +50,16 @@ export function * newTournamentSubmitSaga (action) {
       yield put(newTournamentSubmitSuccess(result.data))
 
       const adminQueryParam =
-        new URLSearchParams({ admin: result.data.adminLink })
+        new URLSearchParams({ admin: result.data.info.adminLink })
           .toString()
 
       console.log(adminQueryParam)
 
       history.push({
-        pathname: `/t/${result.data.publicLink}`,
+        pathname: `/t/${result.data.info.publicLink}`,
         search: `?${adminQueryParam}`
       })
+      window.scrollTo(0, 0)
     } else {
       yield put(newTournamentSubmitFail('timeout'))
     }
@@ -102,20 +108,19 @@ export function * loadTournamentSaga () {
   }
 }
 
-export function * startTournamentSaga () {
-  yield put(startTournamentStart())
+export function * updateBracketSaga ({ isStartTournamentRequest }) {
+  yield put(updateBracketStart())
   try {
     const publicLink = getTournamentPublicLink()
-    console.log(publicLink)
 
-    const startTournamentTimeout = 5000
+    const updateBracketTimeout = 5000
     const { participantsInputValue } = (yield select()).tournament
     const participantsArray = getParticipantsArray(participantsInputValue)
     console.log(participantsInputValue)
 
     const result = yield race({
-      data: call(startTournament, publicLink, participantsArray),
-      timeout: delay(startTournamentTimeout)
+      data: call(updateBracket, publicLink, participantsArray, isStartTournamentRequest),
+      timeout: delay(updateBracketTimeout)
     })
 
     console.log(result.data)
@@ -125,12 +130,41 @@ export function * startTournamentSaga () {
     }
 
     if (!result.timeout) {
-      yield put(startTournamentSuccess(result.data))
+      yield put(updateBracketSuccess(result.data))
     } else {
       console.log('timeout')
-      yield put(startTournamentFail('timeout'))
+      yield put(updateBracketFail('timeout'))
     }
   } catch (error) {
-    yield put(startTournamentFail(error))
+    yield put(updateBracketFail(error))
+  }
+}
+
+export function * reportMatchScoreSaga (action) {
+  const {
+    roundId,
+    matchId,
+    player1Data,
+    player2Data,
+    isFinal
+  } = action
+
+  yield put(reportMatchScoreStart())
+  try {
+    const publicLink = getTournamentPublicLink()
+
+    const {
+      winner,
+      progressStatus,
+      nextRoundId,
+      nextMatchId,
+      nextMatchPlayerSlot
+    } = yield call(reportMatchScore, publicLink, roundId, matchId, player1Data, player2Data, isFinal)
+
+    isFinal
+      ? yield put(reportMatchScoreEndTournament(winner, progressStatus))
+      : yield put(reportMatchScoreSuccess(winner, nextRoundId, nextMatchId, nextMatchPlayerSlot, roundId, matchId, player1Data, player2Data))
+  } catch (error) {
+    yield put(reportMatchScoreFail())
   }
 }

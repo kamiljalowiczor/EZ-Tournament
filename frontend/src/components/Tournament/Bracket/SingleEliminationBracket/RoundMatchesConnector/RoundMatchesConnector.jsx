@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
   })
 }))
 
-export default function NextRoundMatchesConnector (props) {
+function RoundMatchesConnector (props) {
   const [lineHeight, setLineHeight] = useState(0)
   const [lineTopOffset, setLineTopOffset] = useState(0)
 
@@ -41,12 +41,20 @@ export default function NextRoundMatchesConnector (props) {
       <Grid item>
         <Match
           ref={refMatch1}
-          participants={props.matchOneParticipants}
+          matchId={props.matchOneId}
+          roundId={props.roundId}
+          isFinal={props.isFinal}
         />
         <div className={classes.marginBottom} />
         {props.isFinal
           ? null
-          : <Match ref={refMatch2} participants={props.matchTwoParticipants} />}
+          : (
+            <Match
+              ref={refMatch2}
+              matchId={props.matchTwoId}
+              roundId={props.roundId}
+            />
+          )}
       </Grid>
       <Grid item xs={12}>
         <SingleEliminationLine
@@ -58,3 +66,5 @@ export default function NextRoundMatchesConnector (props) {
     </Grid>
   )
 }
+
+export default React.memo(RoundMatchesConnector)

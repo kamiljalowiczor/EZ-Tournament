@@ -1,6 +1,12 @@
 import { tournamentActionTypes } from '../../common/constants/actionTypes'
+import { tournamentStatusTypes } from '../../common/constants/tournamentStatus'
 import { getAmountOfRounds } from '../../components/Tournament/Bracket/common/Utils/bracketMathUtils'
-import { getParticipantsArray, populateRoundsArrayWithPlayers } from './utils/tournamentUtils'
+import {
+  getParticipantsArray,
+  populateRoundsArrayWithPlayers,
+  getRoundsArrayWithPlayerHighlights
+} from './utils/tournamentUtils'
+import produce from 'immer'
 
 const initialState = {
   tournamentInfo: {
@@ -12,8 +18,13 @@ const initialState = {
     adminLink: undefined
   },
   bracket: {
-    roundsAmount: 0,
-    rounds: []
+    progressStatus: tournamentStatusTypes.NOT_STARTED, // IN_PROGRESS, FINISHED
+    participants: [],
+    rounds: [],
+    winner: {}
+  },
+  bracketUI: {
+    highlightedId: null
   },
   isRedirectedFromForm: false,
   submitError: undefined,
@@ -22,7 +33,8 @@ const initialState = {
   isSubmittingNewTournament: false,
   isLoading: false, // loadTournament
   loadingError: false,
-  isStartingTournament: false,
+  isUpdatingBracket: false,
+  updateError: false,
   participantsInputValue: ''
 }
 
@@ -37,7 +49,12 @@ function newTournamentSubmitStart (state, action) {
 function newTournamentSubmitSuccess (state, action) {
   return {
     ...state,
-    tournamentInfo: { ...action.tournamentData },
+    tournamentInfo: {
+      ...action.tournamentData.info
+    },
+    bracket: {
+      ...action.tournamentData.bracket
+    },
     isUrlAvailable: false,
     isSubmittingNewTournament: false,
     isRedirectedFromForm: true,
@@ -79,6 +96,12 @@ function urlChangeNotAvailable (state, action) {
 function participantsInputChange (state, action) {
   const { value } = action
 
+  if (getParticipantsArray(value).length > 256) {
+    return {
+      ...state
+    }
+  }
+
   return {
     ...state,
     participantsInputValue: value
@@ -110,13 +133,33 @@ function loadTournamentStart (state, action) {
 }
 
 function loadTournamentSuccess (state, action) {
-  console.log(action.tournamentData)
+  const data = action.tournamentData
+  let bracket = data.bracket
+  let rounds = bracket.rounds
+  let participants = bracket.participants
+
+  console.log(data)
+
+  if (!data.bracket.rounds) {
+    rounds = []
+  }
+  if (!data.bracket.participants) {
+    participants = []
+  }
+
+  bracket = {
+    ...bracket,
+    rounds,
+    participants
+  }
 
   return {
     ...state,
     isLoading: false,
     loadingError: false,
-    tournamentInfo: action.tournamentData.info
+    tournamentInfo: data.info,
+    bracket,
+    participantsInputValue: participants.join(', ').replace(/(, [^, ]*), /g, '$1\n')
   }
 }
 
@@ -128,19 +171,19 @@ function loadTournamentFail (state, action) {
   }
 }
 
-function startTournamentStart (state, action) {
+function updateBracketStart (state, action) {
   return {
     ...state,
-    isStartingTournament: true,
-    startTournamentError: false
+    isUpdatingBracket: true,
+    updateError: false
   }
 }
 
-function startTournamentSuccess (state, action) {
+function updateBracketSuccess (state, action) {
   return {
     ...state,
-    isStartingTournament: false,
-    startTournamentError: false,
+    isUpdatingBracket: false,
+    updateError: false,
     bracket: {
       ...action.bracketData,
       roundsAmount: action.bracketData.rounds.length
@@ -148,11 +191,82 @@ function startTournamentSuccess (state, action) {
   }
 }
 
-function startTournamentFail (state, action) {
+function updateBracketFail (state, action) {
   return {
     ...state,
-    isStartingTournament: false,
-    startTournamentError: action.error
+    isUpdatingBracket: false,
+    updateError: action.error
+  }
+}
+
+function reportMatchStart (state, action) {
+  return {
+    ...state
+  }
+}
+
+function reportMatchSuccess (state, action) {
+  const {
+    winner,
+    nextRoundId,
+    nextMatchId,
+    nextMatchPlayerSlot,
+    prevRoundId,
+    prevMatchId,
+    reportedPlayer1Data,
+    reportedPlayer2Data
+  } = action
+
+  const rounds = produce(state.bracket.rounds, draft => {
+    draft[nextRoundId].matches[nextMatchId].players[nextMatchPlayerSlot] = winner
+
+    draft[prevRoundId].matches[prevMatchId].players[0] = reportedPlayer1Data
+    draft[prevRoundId].matches[prevMatchId].players[1] = reportedPlayer2Data
+  })
+
+  return {
+    ...state,
+    bracket: {
+      ...state.bracket,
+      rounds
+    }
+  }
+}
+
+function reportMatchEndTournament (state, action) {
+  const {
+    winner,
+    progressStatus
+  } = action
+
+  return {
+    ...state,
+    bracket: {
+      ...state.bracket,
+      progressStatus,
+      winner
+    }
+  }
+}
+
+function reportMatchFail (state, action) {
+  return {
+    ...state
+  }
+}
+
+function updatePlayerHighlightInBracket (state, action) {
+  const {
+    participantId,
+    shouldHighlight
+  } = action
+
+  return {
+    ...state,
+    bracketUI: {
+      ...state.bracketUI,
+      highlightedId: shouldHighlight ? participantId : null
+    }
   }
 }
 
@@ -180,12 +294,22 @@ export default function tournament (state = initialState, action) {
       return loadTournamentSuccess(state, action)
     case tournamentActionTypes.LOAD_TOURNAMENT_FAIL:
       return loadTournamentFail(state, action)
-    case tournamentActionTypes.START_TOURNAMENT_START:
-      return startTournamentStart(state, action)
-    case tournamentActionTypes.START_TOURNAMENT_SUCCESS:
-      return startTournamentSuccess(state, action)
-    case tournamentActionTypes.START_TOURNAMENT_FAIL:
-      return startTournamentFail(state, action)
+    case tournamentActionTypes.UPDATE_BRACKET_START:
+      return updateBracketStart(state, action)
+    case tournamentActionTypes.UPDATE_BRACKET_SUCCESS:
+      return updateBracketSuccess(state, action)
+    case tournamentActionTypes.UPDATE_BRACKET_FAIL:
+      return updateBracketFail(state, action)
+    case tournamentActionTypes.REPORT_MATCH_SCORE_START:
+      return reportMatchStart(state, action)
+    case tournamentActionTypes.REPORT_MATCH_SCORE_SUCCESS:
+      return reportMatchSuccess(state, action)
+    case tournamentActionTypes.REPORT_MATCH_SCORE_END_TOURNAMENT:
+      return reportMatchEndTournament(state, action)
+    case tournamentActionTypes.REPORT_MATCH_SCORE_FAIL:
+      return reportMatchFail(state, action)
+    case tournamentActionTypes.UPDATE_PLAYER_HIGHLIGHT_IN_BRACKET:
+      return updatePlayerHighlightInBracket(state, action)
     default:
       return state
   }

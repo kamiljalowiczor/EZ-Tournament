@@ -1,43 +1,22 @@
 import React from 'react'
-import { makeStyles, Box, Paper, InputBase } from '@material-ui/core'
+import { makeStyles, Box, Paper, InputBase, OutlinedInput, InputAdornment, FormControl, IconButton } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
 import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme) => ({
-  inputRoot: {
-    color: 'inherit',
-    width: '40vw'
-  },
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      width: '12ch',
-      '&:focus': {
-        width: '20ch'
-      }
-    }
-  },
-  search: {
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    marginLeft: 0,
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(1),
-      width: 'auto'
-    }
-  },
-  searchIcon: {
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
+  root: {
+    padding: '2px 4px',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    width: '100%',
+    height: '36px'
+  },
+  input: {
+    marginLeft: theme.spacing(1),
+    flex: 1
+  },
+  iconButton: {
+    padding: 10
   }
 }))
 
@@ -45,24 +24,22 @@ export default function SearchBar () {
   const { t } = useTranslation()
   const classes = useStyles()
 
+  // placeholder = {t('search-placeholder')}
+
   return (
-    <Box className={classes.showcaseBottom}>
-      <Paper variant='outlined' className={classes.search}>
-        <div className={classes.searchIcon}>
-          <SearchIcon />
-        </div>
-        <InputBase
-          placeholder={t('search-placeholder')}
-          classes={{
-            root: classes.inputRoot,
-            input: classes.inputInput
-          }}
-          inputProps={{
-            'aria-label': 'search',
-            style: { textAlign: 'center', width: '100%' }
-          }}
-        />
-      </Paper>
-    </Box>
+    <Paper variant='outlined' className={classes.root}>
+      <IconButton className={classes.iconButton} aria-label='search'>
+        <SearchIcon />
+      </IconButton>
+      <InputBase
+        className={classes.input}
+        placeholder={t('search-placeholder')}
+        inputProps={{
+          'aria-label': 'search',
+          style: { textAlign: 'center' },
+          maxLength: 25
+        }}
+      />
+    </Paper>
   )
 }

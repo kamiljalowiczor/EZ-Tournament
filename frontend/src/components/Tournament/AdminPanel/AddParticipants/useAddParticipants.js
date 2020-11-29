@@ -1,25 +1,23 @@
 import { useDispatch, useSelector } from 'react-redux'
 import {
   participantInputChangeAction,
-  drawBracketAction,
-  startTournament
+  updateBracket
 } from '../../../../data/actions/tournament/tournamentActions'
 import { getParticipantsArray } from '../../../../data/reducers/utils/tournamentUtils'
 
 export default function useAddParticipants () {
   const dispatch = useDispatch()
 
-  function onDrawBracketClick () {
-    dispatch(drawBracketAction())
+  function onAddParticipantsClick () {
+    dispatch(updateBracket(false))
   }
 
   function onStartTournamentClick () {
-    dispatch(startTournament())
+    dispatch(updateBracket(true))
   }
 
   function onParticipantsInputChange (e) {
-    const value = e.target.value.replace(/,/g, '\n').replace(/\n\n/g, '\n')
-
+    const value = e.target.value.replace(/\n\n/g, '\n')
     dispatch(participantInputChangeAction(value))
   }
 
@@ -28,10 +26,13 @@ export default function useAddParticipants () {
     return getParticipantsArray(participantsInputValue).length
   }
 
+  const participantsInputValue = useSelector(state => state.tournament.participantsInputValue)
+
   return {
-    onDrawBracketClick,
+    onAddParticipantsClick,
     onStartTournamentClick,
     onParticipantsInputChange,
-    getAmountOfEnteredParticipants
+    getAmountOfEnteredParticipants,
+    participantsInputValue
   }
 }

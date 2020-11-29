@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, Suspense } from 'react'
 import { useDispatch } from 'react-redux'
 import { Container, makeStyles, Card } from '@material-ui/core'
 import AdminPanel from '../components/Tournament/AdminPanel'
 import TournamentInfo from '../components/Tournament/TounamentInfo'
-import SingleEliminationBracket from '../components/Tournament/Bracket/SingleEliminationBracket'
 import useTournament from './useTournament'
 import Spinner from '../components/Utils/Spinner'
 import Tournament404 from '../components/Utils/Tournament404'
@@ -13,6 +12,10 @@ const useStyles = makeStyles((theme) => ({
   card: {
     padding: '2rem',
     marginBottom: '2rem'
+  },
+  tournamentInfoContainer: {
+    maxHeight: '600px',
+    overflowY: 'auto'
   },
   root: {
     marginTop: '5rem',
@@ -42,14 +45,18 @@ export default function Tournament (props) {
 
   if (!isLoading || isRedirectedFromForm) {
     if (!loadingError) {
+      const SingleEliminationBracket = React.lazy(() => import('../components/Tournament/Bracket/SingleEliminationBracket'))
+
       content = (
         <Container maxWidth='lg' className={classes.root}>
-          <Card variant='outlined' className={classes.card}>
+          <Card variant='outlined' className={`${classes.card} ${classes.tournamentInfoContainer}`}>
             <TournamentInfo />
           </Card>
           <AdminPanel />
           <Card variant='outlined' className={classes.card}>
-            <SingleEliminationBracket />
+            <Suspense fallback={<Spinner />}>
+              <SingleEliminationBracket />
+            </Suspense>
           </Card>
         </Container>
       )

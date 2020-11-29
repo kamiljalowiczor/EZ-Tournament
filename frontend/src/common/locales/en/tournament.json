@@ -1,7 +1,7 @@
 {
   "admin-panel": "ADMIN PANEL",
   "enter-participants-below": "Enter participants below",
-  "participants-input-tip": "Enter one participant per line or seperate them by commas. Enter them in certain order if you want to reorganize the bracket.",
+  "participants-input-tip": "Enter one participant per line or seperate them by commas. Enter them in certain order if you want to reorganize the bracket. Maximum amount of participants is 256.",
   "rounds": "Rounds",
   "participants": "Participants",
 
@@ -9,8 +9,9 @@
   "link-for-participants-tip": "This is the link you can safely distribute to participants.",
   "link-for-admin": "Tournament admin link",
   "link-for-admin-tip": "You can access admin settings for this tournament under this link. DO NOT SHARE THIS LINK WITH PARTICIPANTS UNLESS YOU WANT THEM TO HAVE ADMIN RIGHTS!",
-  "draw-bracket": "Draw bracket",
+  "add-participants": "Add participants",
   "start-tournament": "Start tournament",
+  "walkover": "{{winner}} gets an walkover due to not having an opponent in this round.",
 
   "hosted-by": "Hosted by:",
   "contact": "Contact:",
@@ -20,6 +21,14 @@
   "who-won": "Who won?",
   "fill-scores": "Fill the scores for this match",
   "save-changes": "Save changes",
+  "in-progress": "Tournament in progress",
+  "in-progress-message": "You can now report the match scores",
+  "finished-message": "This tournament has ended",
+
+  "bracket": "BRACKET",
+  "not-started": "This tournament has not started yet.",
+  "admin-add-participants-reminder": "Add participants to see a preview of the bracket. After you've started the tournament, you won't be able to add or remove participants.",
+  "update-error": "There was an error updating your tournament. Please try again.",
 
   "round": "ROUND",
   "quarterfinals": "QUARTERFINALS",

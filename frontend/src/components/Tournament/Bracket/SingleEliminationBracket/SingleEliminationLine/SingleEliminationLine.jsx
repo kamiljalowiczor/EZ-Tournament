@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
   })
 }))
 
-export default function SingleEliminationLine (props) {
+function SingleEliminationLine (props) {
   const classes = useStyles({
     top: props.topOffset - 2,
     left: 205 // MatchPair width + 5
@@ -28,3 +28,5 @@ export default function SingleEliminationLine (props) {
     </svg>
   )
 }
+
+export default React.memo(SingleEliminationLine)

@@ -11,12 +11,12 @@ const useStyles = makeStyles({
   }
 })
 
-export default function Spinner () {
+export default function Spinner ({ size = 70 }) {
   const classes = useStyles()
 
   return (
     <Box className={classes.root}>
-      <CircularProgress size={70} />
+      <CircularProgress size={size} />
     </Box>
   )
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
@@ -11,6 +12,8 @@ import CloseIcon from '@material-ui/icons/Close'
 import ParticipantResultInput from './ParticipantResultInput'
 import Grid from '@material-ui/core/Grid'
 import { useTranslation } from 'react-i18next'
+import { reportMatchScore } from '../../../../../data/actions/tournament/tournamentActions'
+import useReportMatchResult from './useReportMatchResult'
 
 const styles = (theme) => ({
   root: {
@@ -57,68 +60,64 @@ const DialogActions = withStyles((theme) => ({
 }))(MuiDialogActions)
 
 const ReportMatchResult = withStyles(styles)((props) => {
+  const { t } = useTranslation()
+
   const {
-    participant1 = 'pudzix',
-    participant2 = 'pudzicxocjks',
+    participant1,
+    participant2,
     isOpen,
-    closeModal,
     classes
   } = props
 
-  const { t } = useTranslation()
-  const [score1, setScore1] = useState(0)
-  const [score2, setScore2] = useState(0)
-  const [resultText, setResultText] = useState('')
-  const [winner, setWinner] = useState(null)
+  const {
+    score1,
+    score2,
+    winner,
+    resultText,
+    isWalkover,
+    handleScore1Change,
+    handleScore2Change,
+    handleScoreReport,
+    handleClose
+  } = useReportMatchResult(props)
 
-  const adjustScoreInput = (value) => {
-    value = value.replace(/[^\d]/, '')
+  let scoreContainer = null
+  let fillScoresText = null
 
-    while (value.charAt(0) === '0' && value !== '0') {
-      value = value.substring(1)
-    }
+  if (!isWalkover) {
+    scoreContainer = (
+      <Grid
+        className={classes.scoreContainer}
+        container
+        direction='row'
+        justify='space-between'
+        alignItems='center'
+      >
+        <ParticipantResultInput
+          participantName={participant1.name}
+          value={score1}
+          handleChange={handleScore1Change}
+          isWinner={winner === participant1.name}
+          isLoser={winner === participant2.name}
+        />
+        <ParticipantResultInput
+          participantName={participant2.name}
+          value={score2}
+          handleChange={handleScore2Change}
+          isWinner={winner === participant2.name}
+          isLoser={winner === participant1.name}
+        />
+      </Grid>
+    )
 
-    return value
-  }
-
-  const handleScore1Change = (e) => {
-    const value = adjustScoreInput(e.target.value)
-
-    if (value.length < 5) {
-      setScore1(+value)
-      updateResultUI(+value, +score2)
-    }
-  }
-
-  const handleScore2Change = (e) => {
-    const value = adjustScoreInput(e.target.value)
-
-    if (value.length < 5) {
-      setScore2(+value)
-      updateResultUI(+score1, +value)
-    }
-  }
-
-  const updateResultUI = (score1, score2) => {
-    if (score1 > score2) {
-      setResultText(`${t('tournament:winner')}: ${participant1}`)
-      setWinner(participant1)
-    } else if (score1 < score2) {
-      setResultText(`${t('tournament:winner')}: ${participant2}`)
-      setWinner(participant2)
-    } else {
-      setResultText(t('tournament:draws'))
-      setWinner(null)
-    }
-  }
-
-  const handleClose = () => {
-    // handelklouz musi byc odpalane tylko wtedy gdy user wyjdzie na blurze!!
-    closeModal()
-    setScore1(0)
-    setScore2(0)
-    setResultText('')
-    setWinner(null)
+    fillScoresText = (
+      <Typography
+        variant='h5'
+      >
+        {t('tournament:fill-scores')}
+        <br />
+      </Typography>
+    )
   }
 
   return (
@@ -127,35 +126,8 @@ const ReportMatchResult = withStyles(styles)((props) => {
         {t('tournament:who-won')}
       </DialogTitle>
       <DialogContent dividers>
-        <Typography
-          variant='h5'
-        >
-          {t('tournament:fill-scores')}
-          <br />
-          w sumie chyba najlatwiej bedzie jak admin bedzie mial jakis przycisk 'end round' ktory po prostu skonczy runde i juz wtedy nie bedzie mozna edytowac scoreow. jakies currentRound nie wiem cos takiego
-        </Typography>
-        <Grid
-          className={classes.scoreContainer}
-          container
-          direction='row'
-          justify='space-between'
-          alignItems='center'
-        >
-          <ParticipantResultInput
-            participantName={participant1}
-            value={score1}
-            handleChange={handleScore1Change}
-            isWinner={winner === participant1}
-            isLoser={winner === participant2}
-          />
-          <ParticipantResultInput
-            participantName={participant2}
-            value={score2}
-            handleChange={handleScore2Change}
-            isWinner={winner === participant2}
-            isLoser={winner === participant1}
-          />
-        </Grid>
+        {fillScoresText}
+        {scoreContainer}
         <Typography
           variant='h6'
           align='center'
@@ -166,7 +138,7 @@ const ReportMatchResult = withStyles(styles)((props) => {
       <DialogActions>
         <Button
           autoFocus
-          onClick={handleClose}
+          onClick={handleScoreReport}
           color='primary'
           disabled={winner === null}
         >

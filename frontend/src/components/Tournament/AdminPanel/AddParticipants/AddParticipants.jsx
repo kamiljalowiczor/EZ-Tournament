@@ -18,9 +18,10 @@ export default function AddParticipants () {
 
   const {
     onParticipantsInputChange,
-    onDrawBracketClick,
+    onAddParticipantsClick,
     getAmountOfEnteredParticipants,
-    onStartTournamentClick
+    onStartTournamentClick,
+    participantsInputValue
   } = useAddParticipants()
 
   const amountOfParticipants = getAmountOfEnteredParticipants()
@@ -56,6 +57,7 @@ export default function AddParticipants () {
       </Box>
       <InputField
         type='textarea'
+        value={participantsInputValue}
         changed={(e) => { onParticipantsInputChange(e) }}
         elementConfig={elementConfig}
         name='Enter participants'
@@ -64,11 +66,11 @@ export default function AddParticipants () {
         <Button
           variant='contained'
           color='primary'
-          onClick={onDrawBracketClick}
+          onClick={onAddParticipantsClick}
           className={classes.button}
           disabled={roundsAmount < 1}
         >
-          {t('tournament:draw-bracket')}
+          {t('tournament:add-participants')}
         </Button>
         <Button
           variant='contained'

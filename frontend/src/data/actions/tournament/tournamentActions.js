@@ -92,28 +92,83 @@ export function drawBracketAction () {
   }
 }
 
-export function startTournament () {
+export function updateBracket (isStartTournamentRequest) {
   return {
-    type: tournamentActionTypes.START_TOURNAMENT
+    type: tournamentActionTypes.UPDATE_BRACKET,
+    isStartTournamentRequest
   }
 }
 
-export function startTournamentStart () {
+export function updateBracketStart () {
   return {
-    type: tournamentActionTypes.START_TOURNAMENT_START
+    type: tournamentActionTypes.UPDATE_BRACKET_START
   }
 }
 
-export function startTournamentSuccess (bracketData) {
+export function updateBracketSuccess (bracketData) {
   return {
-    type: tournamentActionTypes.START_TOURNAMENT_SUCCESS,
+    type: tournamentActionTypes.UPDATE_BRACKET_SUCCESS,
     bracketData
   }
 }
 
-export function startTournamentFail (error) {
+export function updateBracketFail (error) {
   return {
-    type: tournamentActionTypes.START_TOURNAMENT_FAIL,
+    type: tournamentActionTypes.UPDATE_BRACKET_FAIL,
     error
+  }
+}
+
+export function reportMatchScore (roundId, matchId, player1Data, player2Data, isFinal) {
+  return {
+    type: tournamentActionTypes.REPORT_MATCH_SCORE,
+    roundId,
+    matchId,
+    player1Data,
+    player2Data,
+    isFinal
+  }
+}
+
+export function reportMatchScoreStart () {
+  return {
+    type: tournamentActionTypes.REPORT_MATCH_SCORE_START
+  }
+}
+
+export function reportMatchScoreSuccess (winner, nextRoundId, nextMatchId, nextMatchPlayerSlot, prevRoundId, prevMatchId, reportedPlayer1Data, reportedPlayer2Data) {
+  return {
+    type: tournamentActionTypes.REPORT_MATCH_SCORE_SUCCESS,
+    winner,
+    nextRoundId,
+    nextMatchId,
+    nextMatchPlayerSlot,
+    prevRoundId,
+    prevMatchId,
+    reportedPlayer1Data,
+    reportedPlayer2Data
+  }
+}
+
+export function reportMatchScoreEndTournament (winner, progressStatus) {
+  return {
+    type: tournamentActionTypes.REPORT_MATCH_SCORE_END_TOURNAMENT,
+    progressStatus,
+    winner
+  }
+}
+
+export function reportMatchScoreFail (error) {
+  return {
+    type: tournamentActionTypes.REPORT_MATCH_SCORE_FAIL,
+    error
+  }
+}
+
+export function updatePlayerHighlightInBracket (participantId, shouldHighlight) {
+  return {
+    type: tournamentActionTypes.UPDATE_PLAYER_HIGHLIGHT_IN_BRACKET,
+    participantId,
+    shouldHighlight
   }
 }

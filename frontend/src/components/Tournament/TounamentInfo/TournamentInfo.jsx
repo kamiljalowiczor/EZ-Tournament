@@ -13,6 +13,9 @@ const useStyles = makeStyles((theme) => ({
   mb05: {
     marginBottom: '0.5rem'
   },
+  mb1: {
+    marginBottom: '1rem'
+  },
   description: {
     maxWidth: '800px'
   }
@@ -56,16 +59,33 @@ export default function TournamentInfo (props) {
   }
 
   if (tournamentInfo.description) {
+    const descriptionText = tournamentInfo.description
+      .split('\n')
+      .map((text, i) => {
+        return (
+          <span key={`description-split-${i}`}>
+            {text}
+            <br />
+            CHUUUUAFWWHAFJHWAIHF
+            CHUUUUAFWWHAFJHWAIHF
+            CHUUUUAFWWHAFJHWAIHF
+            CHUUUUAFWWHAFJHWAIHF
+
+          </span>
+        )
+      })
+
     description = (
       <Typography className={classes.description} align='left' variant='body1'>
-        {tournamentInfo.description}
+        {descriptionText}
       </Typography>
     )
   }
+
   return (
     <Grid container className={classes.root}>
       <Grid className={description ? classes.mb2 : ''} container item direction='column'>
-        {name}
+        <span className={classes.mb05}>{name}</span>
         {host}
         {contact}
       </Grid>

@@ -6,7 +6,8 @@ import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme) => ({
   linkItem: {
-    marginBottom: '2rem'
+    marginBottom: '2rem',
+    width: '80%'
   }
 }))
 

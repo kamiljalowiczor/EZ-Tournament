@@ -2,40 +2,55 @@ function getAmountOfRounds (amountOfParticipants) {
   return Math.ceil(Math.log(amountOfParticipants) / Math.log(2))
 }
 
+function getPlayerObject (name, id, score) {
+  return {
+    name,
+    id,
+    score
+  }
+}
+
+function getMatchObject (winner, players, id) {
+  return {
+    winner,
+    players,
+    id
+  }
+}
+
 function populateRoundsArrayWithPlayers (participantsArray, roundsAmount) {
   const rounds = []
 
   for (let i = roundsAmount; i > 0; i--) {
-    const thisRoundMatches = []
+    const currentRoundMatches = []
+    let currentMatchId = 0
     for (let j = 0; j < Math.pow(2, i); j += 2) {
-      if (i === roundsAmount) {
-        thisRoundMatches.push({
-          players: [
-            {
-              name: participantsArray[j] ? participantsArray[j] : '',
-              id: j + 1
-            },
-            {
-              name: participantsArray[j + 1] ? participantsArray[j + 1] : '',
-              id: j + 2
-            }
+      const player1Name = participantsArray[j] ? participantsArray[j] : ''
+      const player2Name = participantsArray[j + 1] ? participantsArray[j + 1] : ''
+      const players =
+        i === roundsAmount
+          ? [
+            getPlayerObject(player1Name, j + 1, player1Name ? 0 : null),
+            getPlayerObject(player2Name, j + 2, player2Name ? 0 : null)
           ]
-        })
-      } else {
-        thisRoundMatches.push({
-          players: [{ name: `runda: ${i}, mecz: ${j} ; 1` }, { name: `runda: ${i}, mecz: ${j} ; 1` }]
-        })
-      }
+          : [
+            getPlayerObject('', null, null),
+            getPlayerObject('', null, null)
+          ]
+      currentRoundMatches.push(getMatchObject(null, players, currentMatchId))
+      currentMatchId++
     }
-    rounds.push({ matches: thisRoundMatches })
+    rounds.push({
+      id: roundsAmount - i,
+      isFinal: false,
+      matches: currentRoundMatches
+    })
   }
 
   rounds[rounds.length - 1] = {
     ...rounds[rounds.length - 1],
     isFinal: true
   }
-
-  console.log(rounds)
 
   return rounds
 }

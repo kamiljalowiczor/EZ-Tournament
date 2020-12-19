@@ -1,18 +1,73 @@
 import React from 'react'
-import { Grid, Typography } from '@material-ui/core'
+import { Grid, Typography, makeStyles } from '@material-ui/core'
 import ScrollContainer from 'react-indiana-drag-scroll'
 import RoundColumn from './RoundColumn'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { tournamentStatusTypes } from '../../../../common/constants/tournamentStatus'
 import Spinner from '../../../Utils/Spinner'
+import TournamentResult from '../common/TournamentResult'
+import { isSamePlayerInBothSemiFinals, getPlayerFromMatchNotEqualTo } from './helpers'
+
+const useStyles = makeStyles((theme) => ({
+  scrollContainer: {
+    cursor: 'grab',
+    '&:active': {
+      cursor: 'grabbing'
+    }
+  }
+}))
 
 function SingleEliminationBracket () {
   const { t } = useTranslation()
+  const classes = useStyles()
+
   const { rounds, progressStatus, winner } = useSelector((state) => state.tournament.bracket)
   const { adminLink } = useSelector((state) => state.tournament.tournamentInfo)
   const { isUpdatingBracket, updateError } = useSelector((state) => state.tournament)
   const roundsAmount = rounds.length
+
+  const bracketCardTitle = (
+    <Typography
+      align='center'
+      variant='h4'
+      style={{ marginBottom: '2rem' }}
+    >
+      {t('tournament:bracket')}
+    </Typography>
+  )
+
+  if (isUpdatingBracket) {
+    return (
+      <>
+        {bracketCardTitle}
+        <Grid
+          container
+          justify='center'
+          alignItems='flex-start'
+        >
+          <Spinner />
+        </Grid>
+      </>
+    )
+  }
+
+  if (updateError) {
+    return (
+      <>
+        {bracketCardTitle}
+        <Grid
+          container
+          justify='center'
+          alignItems='flex-start'
+        >
+          <Typography>
+            {t('tournament:update-error')}
+          </Typography>
+        </Grid>
+      </>
+    )
+  }
 
   if (!adminLink && progressStatus === tournamentStatusTypes.NOT_STARTED) {
     return (
@@ -24,16 +79,6 @@ function SingleEliminationBracket () {
       </Typography>
     )
   }
-
-  const bracketCardTitle = (
-    <Typography
-      align='center'
-      variant='h4'
-      style={{ marginBottom: '2rem' }}
-    >
-      {t('tournament:bracket')}
-    </Typography>
-  )
 
   if (rounds.length === 0 && progressStatus === tournamentStatusTypes.NOT_STARTED) {
     return (
@@ -51,21 +96,37 @@ function SingleEliminationBracket () {
 
   let winnerShowcase = null
   if (winner && progressStatus === tournamentStatusTypes.FINISHED) {
+    let thirdPlacePlayer1 = {}
+    let thirdPlacePlayer2 = {}
+    const secondPlacePlayer = rounds[roundsAmount - 1].matches[0].players.find(player => player.id !== winner.id)
+
+    if (rounds[roundsAmount - 2]) {
+      const semiFinals = rounds[roundsAmount - 2].matches
+      if (isSamePlayerInBothSemiFinals(semiFinals, secondPlacePlayer.id)) {
+        thirdPlacePlayer1 =
+          getPlayerFromMatchNotEqualTo(semiFinals[0], winner.id, secondPlacePlayer.id) ||
+          getPlayerFromMatchNotEqualTo(semiFinals[1], winner.id, secondPlacePlayer.id)
+      } else if (rounds[roundsAmount - 2]) {
+        thirdPlacePlayer1 = getPlayerFromMatchNotEqualTo(semiFinals[0], winner.id, secondPlacePlayer.id)
+        thirdPlacePlayer2 = getPlayerFromMatchNotEqualTo(semiFinals[1], winner.id, secondPlacePlayer.id)
+      }
+    }
+
     winnerShowcase = (
       <Typography
         align='center'
         variant='h5'
       >
-        TOURNAMENT WINNER: {winner.name}
-        <br />
-        todo: wez jakies ladne zrob
-        <br />
-        <br />
+        <TournamentResult
+          winner={winner.name}
+          secondPlace={secondPlacePlayer.name}
+          thirdPlacePlayer1={thirdPlacePlayer1.name}
+          thirdPlacePlayer2={thirdPlacePlayer2.name}
+        />
       </Typography>
     )
   }
 
-  console.log('render')
   function getRoundLabel (roundNumber, roundsAmount) {
     if (roundNumber === roundsAmount + 1) {
       return t('tournament:winner')
@@ -87,30 +148,11 @@ function SingleEliminationBracket () {
   const width = 237 * (roundsAmount) + 200 // roundColumnWidth * roundsAmount + 200 (200 czyli szerokosc winnera)
   const height = roundsAmount === 1 ? 192 + 50 : Math.pow(2, roundsAmount) / 4 * 192 + 50 // 160 to wysokosc dwoch meczow obok siebie + 32 margin bottom, + 50 zeby round header sie zmiescil
 
-  if (isUpdatingBracket || updateError) {
-    return (
-      <>
-        {bracketCardTitle}
-        <Grid
-          container
-          justify='center'
-          alignItems='flex-start'
-        >
-          {isUpdatingBracket && <Spinner />}
-          {updateError &&
-            <Typography>
-              {t('tournament:update-error')}
-            </Typography>}
-        </Grid>
-      </>
-    )
-  }
-
   return (
     <>
       {bracketCardTitle}
       {winnerShowcase}
-      <ScrollContainer vertical={false} style={{ cursor: 'grab' }}>
+      <ScrollContainer vertical={false} className={classes.scrollContainer}>
         <Grid
           container
           direction='row'

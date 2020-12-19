@@ -1,8 +1,6 @@
-import React, { useState } from 'react'
-import { makeStyles, RadioGroup, Radio, FormControlLabel } from '@material-ui/core'
+import React from 'react'
+import { makeStyles, RadioGroup, FormControlLabel } from '@material-ui/core'
 import BracketCard from './BracketCard'
-
-import tempImage from '../../../common/assets/751.jpg'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,10 +22,10 @@ export default function BracketFormatRadioGroup (props) {
         onClick={() => { props.changed('singleElimination') }}
         control={
           <BracketCard
-            image={tempImage}
+            // image={tempImage}
             active={props.value === 'singleElimination'}
             title='Single elimination'
-            description='Super zabawa w drabince pojedynczego przepierdalania'
+            description=''
           />
         }
       />
@@ -37,10 +35,10 @@ export default function BracketFormatRadioGroup (props) {
         onClick={() => { props.changed('doubleElimination') }}
         control={
           <BracketCard
-            image={tempImage}
+            // image={tempImage}
             active={props.value === 'doubleElimination'}
             title='Double elimination'
-            description='Super zabawa w drabince podwojnego przepierdalania'
+            description=''
           />
         }
       />
@@ -50,10 +48,10 @@ export default function BracketFormatRadioGroup (props) {
         onClick={() => { props.changed('roundRobin') }}
         control={
           <BracketCard
-            image={tempImage}
+            // image={tempImage}
             active={props.value === 'roundRobin'}
             title='Round robin'
-            description='Super zabawa w drabince ciaglego przepierdalania'
+            description=''
           />
         }
       />

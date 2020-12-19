@@ -136,17 +136,13 @@ export function reportMatchScoreStart () {
   }
 }
 
-export function reportMatchScoreSuccess (winner, nextRoundId, nextMatchId, nextMatchPlayerSlot, prevRoundId, prevMatchId, reportedPlayer1Data, reportedPlayer2Data) {
+export function reportMatchScoreSuccess (winner, progressStatus, rounds, roundId) {
   return {
     type: tournamentActionTypes.REPORT_MATCH_SCORE_SUCCESS,
     winner,
-    nextRoundId,
-    nextMatchId,
-    nextMatchPlayerSlot,
-    prevRoundId,
-    prevMatchId,
-    reportedPlayer1Data,
-    reportedPlayer2Data
+    progressStatus,
+    rounds,
+    roundId
   }
 }
 
@@ -162,6 +158,12 @@ export function reportMatchScoreFail (error) {
   return {
     type: tournamentActionTypes.REPORT_MATCH_SCORE_FAIL,
     error
+  }
+}
+
+export function cleanReportFlags () {
+  return {
+    type: tournamentActionTypes.CLEAN_REPORT_FLAGS
   }
 }
 

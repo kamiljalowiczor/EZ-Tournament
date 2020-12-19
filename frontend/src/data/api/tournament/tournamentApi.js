@@ -16,14 +16,14 @@ export function * isUrlAvailable (url) {
   return res
 }
 
-export function * loadTournament (publicLink, adminId) {
+export function * loadTournament (publicLink, adminId, isUrlCheck) {
   const reqData = {
-    adminId
+    adminId,
+    isUrlCheck
   }
 
   const res = yield axios.get(`/api/v1/tournaments/${publicLink}`, { params: reqData })
 
-  console.log(res.data)
   return res.data
 }
 
@@ -32,8 +32,6 @@ export function * updateBracket (publicLink, participants, isStartTournamentRequ
     participants,
     isStartTournamentRequest
   }
-
-  console.log(reqData)
 
   const config = { headers: { 'Content-Type': 'application/json' } }
   const res = yield axios.put(`/api/v1/tournaments/${publicLink}/bracket`, reqData, config)

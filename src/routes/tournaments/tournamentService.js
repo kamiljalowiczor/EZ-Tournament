@@ -8,6 +8,7 @@ const tournamentStatusTypes = {
 }
 
 async function newTournament (req, reply) {
+  reply.header('Cache-Control', 'no-store, max-age=0')
   let payload = null
   const databaseUrl = this.config.DATABASE_URL
 
@@ -67,27 +68,42 @@ async function newTournament (req, reply) {
 }
 
 async function getTournament (req, reply) {
+  reply.header('Cache-Control', 'no-store, max-age=0')
   let payload = null
   const databaseUrl = this.config.DATABASE_URL
 
   const tournamentId = req.params.id
+
+  const isUrlCheck = req.query.isUrlCheck
   const adminId = req.query.adminId
 
   let tournamentData
   await axios.get(`${databaseUrl}/tournaments/${tournamentId}.json`, { headers: { 'Content-Type': 'text/plain' } })
     .then((dbRes) => {
       tournamentData = dbRes.data
-    })
-    .catch(() => {
-      payload = { error: '502 Bad Gateway' }
-      reply.code(502)
-    })
 
-  if (adminId !== tournamentData.info.adminLink) {
-    tournamentData.info.adminLink = ''
+      if (isUrlCheck) {
+        payload = tournamentData
+          ? { isUrlAvailable: false }
+          : { isUrlAvailable: true }
+        reply.code(200)
+        reply.send(payload)
+      }
+    })
+    .catch((err) => {
+      payload = { error: err.statusText || 'Bad Request' }
+      reply.code(err.status || 400)
+      reply.send()
+    })
+  if (reply.sent) return
+
+  if (tournamentData && tournamentData.info) {
+    if (adminId !== tournamentData.info.adminLink) {
+      tournamentData.info.adminLink = ''
+    }
   }
 
-  console.log(tournamentData)
+  console.log(tournamentData.bracket && tournamentData.bracket.rounds)
 
   payload = tournamentData
   reply.send(payload)

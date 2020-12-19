@@ -65,10 +65,6 @@ export default function AdminPanel (props) {
       >
         {t('tournament:admin-panel')}
       </Typography>
-      TODO: ZAPIS ZAWODNIKOW DO FIREBASEA, UZUPELNIONY O WSZYSTKIE TE GLUPOTY TAKIE TYPU ID I SCORE,
-      WCZYTYWANIE TYCH ZAWODNIKOW Z BAZY DO INPUTA OD RAZU NA ZALADOWANIU,
-      UPDATE SCOREOW,
-      ZROBIENIE CHECK URLA Z BAZY
       <Grid
         container
         direction='row'

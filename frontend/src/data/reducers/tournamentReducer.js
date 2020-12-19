@@ -3,10 +3,8 @@ import { tournamentStatusTypes } from '../../common/constants/tournamentStatus'
 import { getAmountOfRounds } from '../../components/Tournament/Bracket/common/Utils/bracketMathUtils'
 import {
   getParticipantsArray,
-  populateRoundsArrayWithPlayers,
-  getRoundsArrayWithPlayerHighlights
+  populateRoundsArrayWithPlayers
 } from './utils/tournamentUtils'
-import produce from 'immer'
 
 const initialState = {
   tournamentInfo: {
@@ -18,7 +16,7 @@ const initialState = {
     adminLink: undefined
   },
   bracket: {
-    progressStatus: tournamentStatusTypes.NOT_STARTED, // IN_PROGRESS, FINISHED
+    progressStatus: tournamentStatusTypes.NOT_STARTED,
     participants: [],
     rounds: [],
     winner: {}
@@ -26,6 +24,7 @@ const initialState = {
   bracketUI: {
     highlightedId: null
   },
+  participantsInputValue: '',
   isRedirectedFromForm: false,
   submitError: undefined,
   isUrlAvailable: true,
@@ -35,7 +34,8 @@ const initialState = {
   loadingError: false,
   isUpdatingBracket: false,
   updateError: false,
-  participantsInputValue: ''
+  isReportingMatch: false,
+  reportMatchError: undefined
 }
 
 function newTournamentSubmitStart (state, action) {
@@ -48,7 +48,7 @@ function newTournamentSubmitStart (state, action) {
 
 function newTournamentSubmitSuccess (state, action) {
   return {
-    ...state,
+    ...initialState,
     tournamentInfo: {
       ...action.tournamentData.info
     },
@@ -96,7 +96,7 @@ function urlChangeNotAvailable (state, action) {
 function participantsInputChange (state, action) {
   const { value } = action
 
-  if (getParticipantsArray(value).length > 256) {
+  if (getParticipantsArray(value).length > 64) {
     return {
       ...state
     }
@@ -126,7 +126,7 @@ function drawBracket (state, action) {
 
 function loadTournamentStart (state, action) {
   return {
-    ...state,
+    ...initialState,
     isLoading: true,
     loadingError: false
   }
@@ -137,8 +137,6 @@ function loadTournamentSuccess (state, action) {
   let bracket = data.bracket
   let rounds = bracket.rounds
   let participants = bracket.participants
-
-  console.log(data)
 
   if (!data.bracket.rounds) {
     rounds = []
@@ -154,7 +152,7 @@ function loadTournamentSuccess (state, action) {
   }
 
   return {
-    ...state,
+    ...initialState,
     isLoading: false,
     loadingError: false,
     tournamentInfo: data.info,
@@ -165,7 +163,7 @@ function loadTournamentSuccess (state, action) {
 
 function loadTournamentFail (state, action) {
   return {
-    ...state,
+    ...initialState,
     isLoading: false,
     loadingError: action.error
   }
@@ -201,35 +199,29 @@ function updateBracketFail (state, action) {
 
 function reportMatchStart (state, action) {
   return {
-    ...state
+    ...state,
+    isReportingMatch: true,
+    reportMatchError: undefined
   }
 }
 
 function reportMatchSuccess (state, action) {
   const {
     winner,
-    nextRoundId,
-    nextMatchId,
-    nextMatchPlayerSlot,
-    prevRoundId,
-    prevMatchId,
-    reportedPlayer1Data,
-    reportedPlayer2Data
+    progressStatus,
+    rounds
   } = action
-
-  const rounds = produce(state.bracket.rounds, draft => {
-    draft[nextRoundId].matches[nextMatchId].players[nextMatchPlayerSlot] = winner
-
-    draft[prevRoundId].matches[prevMatchId].players[0] = reportedPlayer1Data
-    draft[prevRoundId].matches[prevMatchId].players[1] = reportedPlayer2Data
-  })
 
   return {
     ...state,
     bracket: {
       ...state.bracket,
-      rounds
-    }
+      rounds,
+      progressStatus: progressStatus || state.bracket.progressStatus,
+      winner: winner || state.bracket.winner
+    },
+    isReportingMatch: false,
+    reportMatchError: undefined
   }
 }
 
@@ -243,15 +235,29 @@ function reportMatchEndTournament (state, action) {
     ...state,
     bracket: {
       ...state.bracket,
-      progressStatus,
-      winner
-    }
+      progressStatus: progressStatus || state.bracket.progressStatus,
+      winner: winner || state.bracket.winner
+    },
+    isReportingMatch: false,
+    reportMatchError: undefined
   }
 }
 
 function reportMatchFail (state, action) {
+  const { error } = action
+
   return {
-    ...state
+    ...state,
+    isReportingMatch: false,
+    reportMatchError: error
+  }
+}
+
+function cleanReportFlags (state, action) {
+  return {
+    ...state,
+    isReportingMatch: false,
+    reportMatchError: undefined
   }
 }
 
@@ -310,6 +316,8 @@ export default function tournament (state = initialState, action) {
       return reportMatchFail(state, action)
     case tournamentActionTypes.UPDATE_PLAYER_HIGHLIGHT_IN_BRACKET:
       return updatePlayerHighlightInBracket(state, action)
+    case tournamentActionTypes.CLEAN_REPORT_FLAGS:
+      return cleanReportFlags(state, action)
     default:
       return state
   }

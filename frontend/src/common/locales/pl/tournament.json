@@ -1,7 +1,7 @@
 {
   "admin-panel": "PANEL ADMINA",
   "enter-participants-below": "Wprowadź uczestników poniżej",
-  "participants-input-tip": "Wprowadź jednego uczestnika w wierszu, lub oddziel ich przecinkami. Kolejność wprowadzania uczestników ma wpływ na organizacje drabinki. Maksymalna ilość uczestników wynosi 256.",
+  "participants-input-tip": "Wprowadź jednego uczestnika w wierszu, lub oddziel ich przecinkami. Kolejność wprowadzania uczestników ma wpływ na organizacje drabinki. Maksymalna ilość uczestników wynosi 64.",
   "rounds": "Rundy",
   "participants": "Uczestnicy",
   
@@ -18,15 +18,22 @@
   "winner": "ZWYCIĘZCA",
   "draws": "Remisy nie są akceptowane w drabinkach",
   "who-won": "Kto wygrał?",
+  "score-reported-title": "Mecz zakończony",
+  "score-reported-text": "Wynik tego meczu został już zgłoszony",
+  "awaiting-opponent-title": "Oczekiwanie na przeciwnika",
+  "awaiting-opponent-text": "{{onlyParticipant}} czeka na przeciwnika.",
   "fill-scores": "Uzupełnij wynik tego meczu",
   "save-changes": "Zapisz zmiany",
-  "walkover": "{{winner}} wygrywa walkowerem z powodu braku przeciwnika w tej rundzie.",
+  "report-score-error-title": "Wystąpił błąd",
+  "report-score-error-text": "Podczas aktualizacji wyniku tego meczu wystąpił błąd. Spróbuj ponownie.",
+
   "in-progress": "Turniej w toku",
   "in-progress-message": "Możesz teraz uzpełniać wyniki meczów.",
   "finished-message": "Turniej zakończony",
 
   "bracket": "DRABINKA",
   "not-started": "Ten turniej jeszcze się nie zaczął.",
+  "final-results": "Wyniki",
   "admin-add-participants-reminder": "Dodaj uczestników turnieju, żeby zobaczyć podgląd drabinki. Po rozpoczęciu turnieju nie będzie możliwości ich dodawania lub usuwania.",
   "update-error": "Wystąpił błąd podczas aktualizacji drabinki. Spróbuj ponownie.",
 

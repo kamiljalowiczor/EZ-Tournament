@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles, Box, Paper, InputBase, OutlinedInput, InputAdornment, FormControl, IconButton } from '@material-ui/core'
+import { makeStyles, Paper, InputBase, IconButton } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
 import { useTranslation } from 'react-i18next'
 
@@ -23,8 +23,6 @@ const useStyles = makeStyles((theme) => ({
 export default function SearchBar () {
   const { t } = useTranslation()
   const classes = useStyles()
-
-  // placeholder = {t('search-placeholder')}
 
   return (
     <Paper variant='outlined' className={classes.root}>

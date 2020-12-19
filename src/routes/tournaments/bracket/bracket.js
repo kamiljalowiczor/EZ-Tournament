@@ -3,6 +3,7 @@ const { tournamentStatusTypes } = require('../tournamentService')
 const bracketUtils = require('./helpers')
 
 async function updateBracket (req, reply) {
+  reply.header('Cache-Control', 'no-store, max-age=0')
   const databaseUrl = this.config.DATABASE_URL
 
   const tournamentId = req.params.id
@@ -21,9 +22,10 @@ async function updateBracket (req, reply) {
     .then(() => {
       reply.code(200)
     })
-    .catch(() => {
-      payload = { error: '502 Bad Gateway' }
-      reply.code(502)
+    .catch((err) => {
+      payload = { error: err.statusText || 'Bad Request' }
+      reply.code(err.status || 400)
+      reply.send()
     })
 
   reply.code(200)

@@ -1,15 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Box } from '@material-ui/core'
 import RoundMatchesConnector from '../../RoundMatchesConnector'
 
 // ten komponent renderuje 2 mecze jednoczesnie zeby w nastepnym komponencie (RoundMatchesConnector) latwo mozna bylo je ze soba laczyc przez linie
 
 function RoundMatches (props) {
-  // const [, forceUpdate] = useState(x => x + 1, 0)
-  // useEffect(() => {
-  //   forceUpdate()
-  // }, [props])
-
   function getMatchPairsToNextRoundArray (matches) {
     const matchPairsArray = []
 

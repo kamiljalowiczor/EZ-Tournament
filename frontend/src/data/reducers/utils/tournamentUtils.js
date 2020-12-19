@@ -45,23 +45,7 @@ export function populateRoundsArrayWithPlayers (participantsArray, roundsAmount)
   return rounds
 }
 
-export const deepCopy = inObject => {
-  if (typeof inObject !== 'object' || inObject === null) {
-    return inObject // Return the value if inObject is not an object
-  }
-
-  // Create an array or object to hold the values
-  const outObject = Array.isArray(inObject) ? [] : {}
-
-  for (const key in inObject) {
-    const value = inObject[key]
-
-    // Recursively (deep) copy for nested objects, including arrays
-    outObject[key] = (typeof value === 'object' && value !== null) ? deepCopy(value) : value
-  }
-
-  return outObject
-}
+// ---------- vvvv tu useless juz ale zostawiam kod zeby w razie co mozna bylo zerknac przy pisaniu pracy jakie to problemy byly
 
 export function getRoundsArrayWithPlayerHighlights (rounds, participantId, matchId, roundId, shouldHighlight) {
   rounds = highlightPlayerLaterInBracket(rounds, participantId, matchId, roundId, shouldHighlight)
@@ -69,7 +53,7 @@ export function getRoundsArrayWithPlayerHighlights (rounds, participantId, match
   return rounds
 }
 
-export function highlightPlayerLaterInBracket (rounds, participantId, matchId, roundId, shouldHighlight) {
+export function highlightPlayerEarlierInBracket (rounds, participantId, matchId, roundId, shouldHighlight) {
   while (rounds[roundId]) {
     let isParticipantFound = false
     const matchPlayers = rounds[roundId].matches[matchId].players
@@ -101,7 +85,7 @@ export function highlightPlayerLaterInBracket (rounds, participantId, matchId, r
   return rounds
 }
 
-export function highlightPlayerEarlierInBracket (rounds, participantId, matchId, roundId, shouldHighlight) {
+export function highlightPlayerLaterInBracket (rounds, participantId, matchId, roundId, shouldHighlight) {
   while (rounds[roundId]) {
     let isParticipantFound = false
     const matchPlayers = rounds[roundId].matches[matchId].players
@@ -125,5 +109,133 @@ export function highlightPlayerEarlierInBracket (rounds, participantId, matchId,
       return rounds
     }
   }
+  return rounds
+}
+
+export function updatePotentialWalkovers (rounds, winner, currentRoundId, currentMatchId) {
+  while (true) {
+    // if second match from the pair is empty, then the one thats being checked is a walkover
+    // potrzebny bedzie update slotaw w ostatnim meczu walkowerowym
+    if (rounds[currentRoundId - 1]) {
+      const lastRoundUpperMatch = rounds[currentRoundId - 1].matches[currentMatchId * 2]
+      const lastRoundLowerMatch = rounds[currentRoundId - 1].matches[(currentMatchId + 0.5) * 2]
+
+      if (lastRoundUpperMatch.isEmpty && lastRoundLowerMatch.isEmpty) { // to sie chyba nawet nie moze wydarzyc xD
+        break
+      }
+
+      // update the other one, not the one thats empty
+      if (lastRoundUpperMatch.isEmpty) {
+        rounds = produce(rounds, draft => {
+          draft[currentRoundId - 1].matches[(currentMatchId + 0.5) * 2].players[0] = { ...winner, score: 'w/o' }
+          draft[currentRoundId - 1].matches[(currentMatchId + 0.5) * 2].isScoreReported = true
+        })
+
+        currentMatchId = (currentMatchId + 0.5) * 2
+      } else if (lastRoundLowerMatch.isEmpty) {
+        rounds = produce(rounds, draft => {
+          draft[currentRoundId - 1].matches[(currentMatchId + 0.5) * 2].players[0] = { ...winner, score: 'w/o' }
+          draft[currentRoundId - 1].matches[currentMatchId * 2].isScoreReported = true
+        })
+
+        currentMatchId = currentMatchId * 2
+      }
+      currentRoundId--
+    } else {
+      break
+    }
+  }
+
+  return rounds
+}
+
+// function updateLastWalkoverMatch (players, desiredSlot, winner, rounds, roundId, matchId) {
+//   if (Array.isArray(players)) {
+//     const player = players.find((player) => winner.name === player.name)
+
+//     if (player) {
+//       return produce(rounds, draft => {
+//         draft[roundId].matches[matchId].players[desiredSlot] = { ...winner, score: 'w/o' }
+//       })
+//     }
+//   }
+//   return false
+// }
+
+export function getImmutablyUpdatedRoundsMatches (rounds, payload) {
+  let {
+    winner,
+    nextRoundId,
+    nextMatchId,
+    nextMatchPlayerSlot,
+    prevRoundId,
+    prevMatchId,
+    reportedPlayer1Data,
+    reportedPlayer2Data
+  } = payload
+
+  console.log(nextRoundId,
+    nextMatchId,
+    nextMatchPlayerSlot)
+
+  rounds = produce(rounds, draft => {
+    draft[nextRoundId].matches[nextMatchId].players[nextMatchPlayerSlot] = { ...winner, score: 'w/o' }
+
+    draft[prevRoundId].matches[prevMatchId].players[0] = reportedPlayer1Data
+    draft[prevRoundId].matches[prevMatchId].players[1] = reportedPlayer2Data
+    draft[prevRoundId].matches[prevMatchId].isScoreReported = true
+  })
+
+  let lastWalkoverMatchRoundId = nextRoundId
+  let lastWalkoverMatchId = nextMatchId
+  let lastWalkoverPlayerSlot = nextMatchPlayerSlot
+
+  let currentRoundId = nextRoundId
+  let currentMatchId = nextMatchId
+  nextRoundId++
+  nextMatchId = Math.floor(currentMatchId / 2)
+  nextMatchPlayerSlot = currentMatchId % 2 === 0 ? 0 : 1
+
+  do {
+    // console.log('currentRoundId', currentRoundId)
+    // console.log('currentMatchId', currentMatchId)
+    // console.log('nextRoundId', nextRoundId)
+    // console.log('nextMatchId', nextMatchId)
+    // console.log('rounds[currentRoundId]', rounds[currentRoundId])
+    // console.log('[currentMatchId * 2]', currentMatchId * 2)
+    // console.log('[(currentMatchId + 0.5) * 2]', (currentMatchId + 0.5) * 2)
+    // console.log('rounds[currentRoundId].matches[currentMatchId * 2]', rounds[currentRoundId].matches[currentMatchId * 2])
+    // console.log('rounds[currentRoundId].matches[(currentMatchId + 0.5) * 2]', rounds[currentRoundId].matches[(currentMatchId + 0.5) * 2])
+    const lastRoundUpperMatch = rounds[currentRoundId - 1].matches[currentMatchId * 2]
+    const lastRoundLowerMatch = rounds[currentRoundId - 1].matches[(currentMatchId + 0.5) * 2]
+
+    const isWalkover = lastRoundUpperMatch.isEmpty || lastRoundLowerMatch.isEmpty
+
+    if (isWalkover) {
+      rounds = produce(rounds, draft => {
+        draft[nextRoundId].matches[nextMatchId].players[nextMatchPlayerSlot] = { ...winner, score: 'w/o' }
+        draft[nextRoundId].matches[nextMatchId].isScoreReported = true
+      })
+      lastWalkoverMatchRoundId = nextRoundId
+      lastWalkoverMatchId = nextMatchId
+      lastWalkoverPlayerSlot = nextMatchPlayerSlot
+    } else {
+      break
+    }
+
+    currentRoundId++
+    currentMatchId = Math.floor(currentMatchId / 2)
+    nextRoundId++
+    nextMatchId = Math.floor(currentMatchId / 2)
+    nextMatchPlayerSlot = currentMatchId % 2 === 0 ? 0 : 1
+  } while (true)
+
+  if (rounds[lastWalkoverMatchRoundId].matches[lastWalkoverMatchId].players[lastWalkoverPlayerSlot].score === 'w/o') {
+    rounds = produce(rounds, draft => {
+      draft[lastWalkoverMatchRoundId].matches[lastWalkoverMatchId].players[lastWalkoverPlayerSlot].score = 0
+      draft[lastWalkoverMatchRoundId].matches[lastWalkoverMatchId].isScoreReported = false
+    })
+  }
+
   return rounds
 }

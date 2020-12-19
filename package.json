@@ -1,9 +1,12 @@
 {
   "name": "ez-tournament",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "The simplest tournament management web application",
   "main": "index.js",
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.32",
+    "@fortawesome/free-solid-svg-icons": "^5.15.1",
+    "@fortawesome/react-fontawesome": "^0.1.13",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "axios": "^0.20.0",

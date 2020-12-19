@@ -49,7 +49,7 @@ export default function useFormFieldControls () {
         validation: {
           required: false,
           minLength: 0,
-          maxLength: 1000
+          maxLength: 2000
         },
         valid: true,
         touched: false
@@ -74,12 +74,14 @@ export default function useFormFieldControls () {
         value: '',
         elementConfig: {
           labelText: t('form:label-contact'),
-          placeholder: t('form:placeholder-contact')
+          placeholder: t('form:placeholder-contact'),
+          multiline: true,
+          rows: 5
         },
         validation: {
           required: false,
           minLength: 0,
-          maxLength: 50
+          maxLength: 300
         },
         valid: true,
         touched: false

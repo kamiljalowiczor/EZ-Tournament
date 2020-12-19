@@ -10,7 +10,7 @@
   "url-invalid": "Custom URL can't contain spaces and special characters other than - and _. ",
   "invalid-length": "Value must be at least {{minLength}} and at most {{maxLength}} characters long.",
   "invalid-length-min": "Value must be at least {{minLength}} characters long.",
-  "invalid-length-max": "Value must be at least {{maxLength}} characters long.",
+  "invalid-length-max": "Value must be at most {{maxLength}} characters long.",
 
   "label-name": "Tournament name",
   "placeholder-name": "Enter your tournament's name",

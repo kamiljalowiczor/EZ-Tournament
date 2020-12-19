@@ -1,5 +1,4 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
 import BracketParticipant from '../../common/BracketParticipant'
 import RoundMatches from './RoundMatches'
 import { Grid, Paper, Typography, makeStyles } from '@material-ui/core'
@@ -44,7 +43,7 @@ function RoundColumn (props) {
   return (
     <Grid style={{ minWidth: isWinner ? '200px' : '237px' }}>
       <div>
-        <Paper variant='outlined' square elevation={3} className={classes.roundTab}>
+        <Paper variant='outlined' className={classes.roundTab}>
           <Typography>
             {label}
           </Typography>

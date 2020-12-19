@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 export default function useTournament () {
-  const dispatch = useDispatch()
   const [tournamentData, setTournamentData] = useState({})
   const isLoading = useSelector(state => state.tournament.isLoading)
   const isRedirectedFromForm = useSelector(state => state.tournament.isRedirectedFromForm)

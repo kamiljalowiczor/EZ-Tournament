@@ -5,16 +5,20 @@ import Layout from './views/Layout.jsx'
 import './i18n'
 import NewTournament from './views/NewTournament.jsx'
 import Tournament from './views/Tournament.jsx'
+import { ThemeProvider } from '@material-ui/styles'
+import theme from './common/constants/theme'
 
 const App = (props) => (
-  <Layout>
-    <Switch>
-      <Route path='/t/:publicLink' component={Tournament} />
-      <Route path='/new' exact component={NewTournament} />
-      <Route path='/' exact component={Home} />
-      <Redirect to='/' />
-    </Switch>
-  </Layout>
+  <ThemeProvider theme={theme}>
+    <Layout>
+      <Switch>
+        <Route path='/t/:publicLink' component={Tournament} />
+        <Route path='/new' exact component={NewTournament} />
+        <Route path='/' exact component={Home} />
+        <Redirect to='/' />
+      </Switch>
+    </Layout>
+  </ThemeProvider>
 )
 
 export default App

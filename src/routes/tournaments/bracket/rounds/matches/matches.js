@@ -1,85 +1,88 @@
 const axios = require('axios')
 const { tournamentStatusTypes } = require('../../../tournamentService')
-
-async function endTournament (req, reply) {
-  
-}
+const {
+  getWinnerData,
+  updateScores
+} = require('./helpers')
 
 async function reportMatchScore (req, reply) {
+  reply.header('Cache-Control', 'no-store, max-age=0')
   let payload = {}
   const databaseUrl = this.config.DATABASE_URL
 
   const tournamentId = req.params.tournamentId
   const roundId = +req.params.roundId
   const matchId = +req.params.matchId
+  const matchPlayerSlot = matchId % 2 === 0 ? 0 : 1
+
   const player1Data = req.body.player1Data
   const player2Data = req.body.player2Data
   const isFinal = req.body.isFinal
 
   const matchResultPayload = {
     id: +matchId,
+    isScoreReported: true,
     players: [player1Data, player2Data]
   }
 
-  // status: dziala reportowanie wynikow dla mecza
-  // todo: zrobienie zeby przechodzil do nastepnej rundy od razu i po stronie be i po stronie fe (do rozwazenia czy zwracac caly tournament jak debil czy w reducerze wkladac po prostu nowe wyniki typu rounds = { ...rounds, round[roundId]: matchId[id]})
-  // jakis mechanizm zeby nie reportowac scoreow dwa razy
-  // naprawa walkowerow
-
-  await axios.put(`${databaseUrl}/tournaments/${tournamentId}/bracket/rounds/${roundId}/matches/${matchId}.json`, matchResultPayload)
-    .then(() => {
-      reply.code(200)
+  let rounds = []
+  await axios.get(`${databaseUrl}/tournaments/${tournamentId}/bracket/rounds.json`)
+    .then((res) => {
+      rounds = res.data
     })
     .catch(() => {
       payload = { error: '502 Bad Gateway' }
       reply.code(502)
     })
+  if (reply.sent) return
 
-  const winnerData = player1Data.score > player2Data.score
-    ? { ...player1Data, score: 0 }
-    : { ...player2Data, score: 0 }
+  // HANDLE THE SCORE THAT USER IS REPORTING RESULT FOR
+  rounds[roundId].matches[matchId] = {
+    ...rounds[roundId].matches[matchId],
+    ...matchResultPayload
+  }
+
+  // RECOGNIZE WINNER
+  const winnerData = getWinnerData(player1Data, player2Data)
+
+  let endTournamentPayload = {}
 
   if (isFinal) {
     // END TOURNAMENT
-    const endTournamentPayload = {
-      winner: winnerData,
+    endTournamentPayload = {
+      winner: { ...winnerData, score: 'GG' },
       progressStatus: tournamentStatusTypes.FINISHED
     }
 
     await axios.patch(`${databaseUrl}/tournaments/${tournamentId}/bracket.json`, endTournamentPayload)
       .then(() => {
-        payload = endTournamentPayload
-      })
-      .catch(() => {
-        payload = { error: '502 Bad Gateway' }
-        reply.code(502)
-        reply.send()
-      })
-  } else {
-    // REPORT SCORE AS USUAL
-    const nextRoundId = roundId + 1
-    const nextMatchId = Math.floor(matchId / 2)
-    const nextMatchPlayerSlot = matchId % 2 === 0 ? 0 : 1
-
-    await axios.put(`${databaseUrl}/tournaments/${tournamentId}/bracket/rounds/${nextRoundId}/matches/${nextMatchId}/players/${nextMatchPlayerSlot}.json`, winnerData)
-      .then(() => {
-        reply.code(200)
         payload = {
-          winner: {
-            ...winnerData,
-            score: 0
-          },
-          nextRoundId,
-          nextMatchId,
-          nextMatchPlayerSlot
+          ...endTournamentPayload
         }
       })
-      .catch(() => {
-        payload = { error: '502 Bad Gateway' }
-        reply.code(502)
+      .catch((err) => {
+        payload = { error: err.statusText || 'Bad Request' }
+        reply.code(err.status || 400)
         reply.send()
       })
+    if (reply.sent) return
   }
+
+  const updatedRounds = updateScores(rounds, roundId, matchId, matchPlayerSlot, winnerData, isFinal)
+
+  await axios.patch(`${databaseUrl}/tournaments/${tournamentId}/bracket.json`, { rounds: updatedRounds })
+    .then(() => {
+      payload = {
+        ...endTournamentPayload,
+        rounds
+      }
+    })
+    .catch((err) => {
+      payload = { error: err.statusText || 'Bad Request' }
+      reply.code(err.status || 400)
+      reply.send()
+    })
+  if (reply.sent) return
 
   reply.code(200)
   reply.send(payload)

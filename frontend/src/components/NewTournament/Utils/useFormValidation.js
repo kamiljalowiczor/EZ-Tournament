@@ -32,7 +32,6 @@ export default function useFormValidation () {
   }
 
   function checkValidity (value, rules) {
-    console.log(value, rules.maxLength)
     let isValid = true
     if (!rules) {
       return true

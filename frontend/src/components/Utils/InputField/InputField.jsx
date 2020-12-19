@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormControl, FormLabel, TextField, RadioGroup, makeStyles, createMuiTheme, MuiThemeProvider, FormHelperText } from '@material-ui/core'
+import { FormControl, FormLabel, TextField, RadioGroup, makeStyles, FormHelperText } from '@material-ui/core'
 import useFormValidation from '../../NewTournament/Utils/useFormValidation'
 
 const useStyles = makeStyles((theme) => ({
@@ -8,27 +8,17 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const formLabelsTheme = createMuiTheme({
-  overrides: {
-    MuiFormLabel: {
-      asterisk: {
-        color: '#db3131',
-        '&$error': {
-          color: '#db3131'
-        }
-      }
-    }
-  }
-})
+function getInputComponent (type, props, error) {
+  const rows = props.elementConfig.rows ? props.elementConfig.rows : 15
 
-function getInputComponent (type, props) {
   const textField = (
     <TextField
       fullWidth
+      error={error}
       id={props.name}
       placeholder={props.elementConfig.placeholder}
       multiline={props.elementConfig.multiline}
-      rows={props.elementConfig.multiline ? 15 : 0}
+      rows={props.elementConfig.multiline && rows}
       onChange={(e) => { props.changed(e) }}
       onBlur={(e) => { if (props.touched) props.touched(e) }}
       variant='outlined'
@@ -51,7 +41,7 @@ export default function InputField (props) {
   const { getErrorMessage } = useFormValidation()
   const classes = useStyles()
 
-  const fieldComponent = getInputComponent(props.type, { ...props })
+  const fieldComponent = getInputComponent(props.type, { ...props }, !!props.error)
 
   let errorLabel = null
 
@@ -64,22 +54,20 @@ export default function InputField (props) {
   }
 
   return (
-    <MuiThemeProvider theme={formLabelsTheme}>
-      <FormControl
-        className={classes.formControl}
-        fullWidth
-        required={props && props.validation && props.validation.required}
-        error={props.error}
+    <FormControl
+      className={classes.formControl}
+      fullWidth
+      required={props && props.validation && props.validation.required}
+      error={props.error}
+    >
+      <FormLabel
+        htmlFor={props.name}
+        className={classes.formLabel}
       >
-        <FormLabel
-          htmlFor={props.name}
-          className={classes.formLabel}
-        >
-          {props.elementConfig.labelText}
-        </FormLabel>
-        {fieldComponent}
-        {errorLabel}
-      </FormControl>
-    </MuiThemeProvider>
+        {props.elementConfig.labelText}
+      </FormLabel>
+      {fieldComponent}
+      {errorLabel}
+    </FormControl>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React from 'react'
 import { Paper, makeStyles, Typography } from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux'
 import { updatePlayerHighlightInBracket } from '../../../../../data/actions/tournament/tournamentActions'
@@ -14,11 +14,11 @@ const useStyles = makeStyles((theme) => ({
   rootHoverablePlayerId: props => ({
     '&:hover': {
       '& $playerId': {
-        backgroundColor: 'purple'
+        backgroundColor: theme.palette.primary.main
       }
     },
     '& $playerId': {
-      backgroundColor: props.isHighlighted ? 'purple' : '#222'
+      backgroundColor: props.isHighlighted ? theme.palette.primary.main : '#222'
     }
   }),
   fontSize: {
@@ -31,10 +31,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#222',
     color: props.id ? 'white' : '#222'
   }),
-  score: {
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    color: 'purple'
-  },
+  score: props => ({
+    backgroundColor: '#333',
+    color: props.winner ? theme.palette.primary.main : theme.palette.secondary.main
+  }),
   participantNumbers: {
     display: 'flex',
     justifyContent: 'center',
@@ -45,29 +45,21 @@ const useStyles = makeStyles((theme) => ({
   rootHoverable: props => ({
     '&:hover': {
       cursor: props.isClickable ? 'pointer' : 'default',
-      backgroundColor: props.isClickable ? theme.palette.grey[100] : 'initial',
-      borderColor: props.isClickable ? 'purple !important' : 'initial'
+      borderColor: props.isClickable ? `${theme.palette.secondary.main}` : 'initial'
     }
   }),
   rootHighlight: props => ({
-    backgroundColor: props.isHighlighted ? theme.palette.grey[100] : 'initial',
-    borderColor: props.isHighlighted ? 'purple !important' : 'initial'
+    borderColor: props.isHighlighted ? `${theme.palette.secondary.main} !important` : 'initial'
   })
 }))
 
 function BracketParticipant (props) {
   const dispatch = useDispatch()
-  const { participant, isClickable } = props
+  const { participant, isClickable, winner } = props
 
   const highlightedId = useSelector(state => state.tournament.bracketUI.highlightedId)
 
-  const classes = useStyles({
-    isClickable,
-    isHighlighted: participant && participant.id === highlightedId,
-    id: participant && participant.id
-  })
-
-  let participantId = String.fromCharCode(160)
+  let participantId = ''
   let participantName = ''
   let participantScore = ''
   let isHighlighted = false
@@ -79,19 +71,32 @@ function BracketParticipant (props) {
     isHighlighted = participant && participant.id === highlightedId
   }
 
+  const classes = useStyles({
+    winner,
+    isClickable,
+    isHighlighted: participantId === highlightedId,
+    id: participantId
+  })
+
   const rootClassname = `
     ${classes.root} 
     ${isClickable ? classes.rootHoverable + ' ' + classes.rootHoverablePlayerId : ''} 
     ${isHighlighted ? classes.rootHighlight + ' ' + classes.rootHoverablePlayerId : ''}
   `
 
+  function onHighlightAction (shouldHighlight) {
+    if (participant && participant.id) {
+      dispatch(updatePlayerHighlightInBracket(participantId, shouldHighlight))
+    }
+  }
+
   return (
     <Paper
       variant='outlined'
       square
       className={rootClassname}
-      onMouseEnter={() => { dispatch(updatePlayerHighlightInBracket(participantId, true)) }}
-      onMouseLeave={() => { dispatch(updatePlayerHighlightInBracket(participantId, false)) }}
+      onMouseEnter={() => { onHighlightAction(true) }}
+      onMouseLeave={() => { onHighlightAction(false) }}
     >
       <Typography
         className={`${classes.participantNumbers} ${classes.playerId} ${classes.fontSize}`}

@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   mb1: {
     marginBottom: '1rem'
   },
-  description: {
+  maxWidth: {
     maxWidth: '800px'
   }
 }))
@@ -36,7 +36,7 @@ export default function TournamentInfo (props) {
 
   if (tournamentInfo.name) {
     name = (
-      <Typography variant='h4'>
+      <Typography variant='h4' align='center'>
         {tournamentInfo.name}
       </Typography>
     )
@@ -45,7 +45,7 @@ export default function TournamentInfo (props) {
   if (tournamentInfo.host) {
     host = (
       <Typography variant='body1'>
-        {t('tournament:hosted-by')} {tournamentInfo.host}
+        <b>{t('tournament:hosted-by')}</b> {tournamentInfo.host}
       </Typography>
     )
   }
@@ -53,7 +53,7 @@ export default function TournamentInfo (props) {
   if (tournamentInfo.contact) {
     contact = (
       <Typography variant='body1'>
-        {t('tournament:contact')} {tournamentInfo.contact}
+        <b>{t('tournament:contact')}</b> {tournamentInfo.contact}
       </Typography>
     )
   }
@@ -66,17 +66,12 @@ export default function TournamentInfo (props) {
           <span key={`description-split-${i}`}>
             {text}
             <br />
-            CHUUUUAFWWHAFJHWAIHF
-            CHUUUUAFWWHAFJHWAIHF
-            CHUUUUAFWWHAFJHWAIHF
-            CHUUUUAFWWHAFJHWAIHF
-
           </span>
         )
       })
 
     description = (
-      <Typography className={classes.description} align='left' variant='body1'>
+      <Typography className={classes.maxWidth} align='left' variant='body1'>
         {descriptionText}
       </Typography>
     )
@@ -84,12 +79,20 @@ export default function TournamentInfo (props) {
 
   return (
     <Grid container className={classes.root}>
-      <Grid className={description ? classes.mb2 : ''} container item direction='column'>
-        <span className={classes.mb05}>{name}</span>
-        {host}
-        {contact}
+      <Grid
+        className={description ? classes.mb2 : ''}
+        container
+        item
+        direction='column'
+        alignItems='center'
+      >
+        <span className={classes.mb1}>{name}</span>
+        <div className={classes.maxWidth} style={{ textAlign: 'left' }}>
+          {host}
+          {contact}
+        </div>
       </Grid>
-      <Grid className={classes.item} container item direction='column' alignItems='center'>
+      <Grid container item direction='column' alignItems='center'>
         {description}
       </Grid>
     </Grid>

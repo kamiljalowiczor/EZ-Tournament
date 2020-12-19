@@ -1,7 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Box, Typography, Button } from '@material-ui/core'
-import RefreshIcon from '@material-ui/icons/Refresh'
 import history from '../../../history'
 import { useTranslation } from 'react-i18next'
 

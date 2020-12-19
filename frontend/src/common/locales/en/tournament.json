@@ -1,7 +1,7 @@
 {
   "admin-panel": "ADMIN PANEL",
   "enter-participants-below": "Enter participants below",
-  "participants-input-tip": "Enter one participant per line or seperate them by commas. Enter them in certain order if you want to reorganize the bracket. Maximum amount of participants is 256.",
+  "participants-input-tip": "Enter one participant per line or seperate them by commas. Enter them in certain order if you want to reorganize the bracket. Maximum amount of participants is 64.",
   "rounds": "Rounds",
   "participants": "Participants",
 
@@ -11,7 +11,6 @@
   "link-for-admin-tip": "You can access admin settings for this tournament under this link. DO NOT SHARE THIS LINK WITH PARTICIPANTS UNLESS YOU WANT THEM TO HAVE ADMIN RIGHTS!",
   "add-participants": "Add participants",
   "start-tournament": "Start tournament",
-  "walkover": "{{winner}} gets an walkover due to not having an opponent in this round.",
 
   "hosted-by": "Hosted by:",
   "contact": "Contact:",
@@ -19,14 +18,22 @@
   "winner": "WINNER",
   "draws": "Draws are not accepted in brackets",
   "who-won": "Who won?",
+  "score-reported-title": "Match finished",
+  "score-reported-text": "Score for this match has already been reported",
+  "awaiting-opponent-title": "Awaiting opponent",
+  "awaiting-opponent-text": "{{onlyParticipant}} is currently waiting for an opponent.",
   "fill-scores": "Fill the scores for this match",
   "save-changes": "Save changes",
+  "report-score-error-title": "Error",
+  "report-score-error-text": "There was an error reporting the score for this match. Please, try again.",
+
   "in-progress": "Tournament in progress",
   "in-progress-message": "You can now report the match scores",
   "finished-message": "This tournament has ended",
 
   "bracket": "BRACKET",
   "not-started": "This tournament has not started yet.",
+  "final-results": "Final results",
   "admin-add-participants-reminder": "Add participants to see a preview of the bracket. After you've started the tournament, you won't be able to add or remove participants.",
   "update-error": "There was an error updating your tournament. Please try again.",
 

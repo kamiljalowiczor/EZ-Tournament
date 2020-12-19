@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
     width: '80px'
   }),
   participantName: props => ({
-    color: props.isWinner ? '#28a745' : props.isLoser ? '#dc3545' : 'initial'
+    color: props.isWinner ? theme.palette.primary.main : props.isLoser ? theme.palette.secondary.main : 'initial'
   })
 }))
 

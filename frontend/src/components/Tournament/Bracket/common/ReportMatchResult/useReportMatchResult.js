@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { reportMatchScore } from '../../../../../data/actions/tournament/tournamentActions'
-import { set } from 'lodash'
+import { cleanReportFlags, reportMatchScore } from '../../../../../data/actions/tournament/tournamentActions'
 
 export default function useReportMatchResult (props) {
   const dispatch = useDispatch()
@@ -15,31 +14,23 @@ export default function useReportMatchResult (props) {
     matchId,
     closeModal,
     isOpen,
-    isFinal
+    isFinal,
+    isScoreReported
   } = props
 
-  const getScoreForParticipant = (participant) => {
-    return participant.score ? participant.score : 0
-  }
+  const { isReportingMatch, reportMatchError } = useSelector(state => state.tournament)
 
-  const [isWalkover, setIsWalkover] = useState(!participant1.name || !participant2.name)
-  const [score1, setScore1] = useState(isWalkover ? 'w/o' : getScoreForParticipant(participant1))
-  const [score2, setScore2] = useState(isWalkover ? ' ' : getScoreForParticipant(participant2))
-  const [winner, setWinner] = useState(
-    isWalkover
-      ? participant1.name
-        ? participant1.name
-        : participant2.name
-      : null
-  )
-  const [resultText, setResultText] = useState(isWalkover ? t('tournament:walkover', { winner }) : '')
+  const [isReadyToReport, setIsReadyToReport] = useState(participant1 && participant1.name && participant2 && participant2.name)
+  const [score1, setScore1] = useState(0)
+  const [score2, setScore2] = useState(0)
+  const [winner, setWinner] = useState(null)
+  const [resultText, setResultText] = useState(`${t('tournament:draws')}`)
+  const [dummyIsScoreReportedFlag, setDummyIsScoreReportedFlag] = useState(isScoreReported) // to jest po to zeby modal sobie mogl spokojnie zniknac po sukcesie przy reporcie wyniku xD
 
   useEffect(() => {
-    setIsWalkover(!participant1.name || !participant2.name)
-    setScore1(isWalkover ? 'w/o' : getScoreForParticipant(participant1))
-    setScore2(isWalkover ? 'w/o' : getScoreForParticipant(participant2))
-    updateResultUI(score1, score2)
-  }, [participant1, participant2, participant1.name, participant2.name, participant1.score, participant2.score, isOpen])
+    setIsReadyToReport(participant1 && participant1.name && participant2 && participant2.name)
+    handleOnExited()
+  }, [participant1, participant2, participant1.name, participant2.name, isOpen])
 
   const adjustScoreInput = (value) => {
     value = value.replace(/[^\d]/, '')
@@ -56,7 +47,7 @@ export default function useReportMatchResult (props) {
 
     if (value.length < 5) {
       setScore1(+value)
-      updateResultUI(+value, +score2)
+      handleResultUpdate(+value, +score2)
     }
   }
 
@@ -65,21 +56,11 @@ export default function useReportMatchResult (props) {
 
     if (value.length < 5) {
       setScore2(+value)
-      updateResultUI(+score1, +value)
+      handleResultUpdate(+score1, +value)
     }
   }
 
-  const updateResultUI = (score1, score2) => {
-    if (isWalkover) {
-      setResultText(`${t('tournament:walkover', { winner })}`)
-      setWinner(isWalkover
-        ? participant1.name
-          ? participant1.name
-          : participant2.name
-        : null)
-      return
-    }
-
+  const handleResultUpdate = (score1, score2) => {
     if (score1 > score2) {
       setResultText(`${t('tournament:winner')}: ${participant1.name}`)
       setWinner(participant1.name)
@@ -87,7 +68,7 @@ export default function useReportMatchResult (props) {
       setResultText(`${t('tournament:winner')}: ${participant2.name}`)
       setWinner(participant2.name)
     } else {
-      setResultText(t('tournament:draws'))
+      setResultText(`${t('tournament:draws')}`)
       setWinner(null)
     }
   }
@@ -100,29 +81,34 @@ export default function useReportMatchResult (props) {
     }
   }
 
+  useEffect(() => {
+    if (!reportMatchError) {
+      handleClose()
+    }
+  }, [isReportingMatch, reportMatchError])
+
   const handleScoreReport = () => {
     const player1Data = getPlayerData(participant1, score1)
     const player2Data = getPlayerData(participant2, score2)
 
     dispatch(reportMatchScore(roundId, matchId, player1Data, player2Data, isFinal))
-
-    // w sumie moze jeszcze jakies spinnery i takie tam w tym modalu przed zamknieciem
-
-    handleClose()
   }
 
   const handleClose = () => {
-    // handelklouz musi byc odpalane tylko wtedy gdy user wyjdzie na blurze!!
-    closeModal()
-    setScore1(getScoreForParticipant(participant1))
-    setScore2(getScoreForParticipant(participant2))
-    setWinner(
-      isWalkover
-        ? participant1.name
-          ? participant1.name
-          : participant2.name
-        : null
-    )
+    if (!isReportingMatch) {
+      closeModal()
+    }
+  }
+
+  const handleOnExited = () => {
+    setTimeout(() => {
+      setScore1(0)
+      setScore2(0)
+      handleResultUpdate(score1, score2)
+      // setReportResultText(null)
+      dispatch(cleanReportFlags())
+      setDummyIsScoreReportedFlag(isScoreReported)
+    }, 250)
   }
 
   return {
@@ -130,11 +116,16 @@ export default function useReportMatchResult (props) {
     score2,
     winner,
     resultText,
-    isWalkover,
+    isReadyToReport,
+    isReportingMatch,
+    reportMatchError,
+    dummyIsScoreReportedFlag,
+    // reportResultText,
+    // reportResultTitle,
     handleScore1Change,
     handleScore2Change,
-    updateResultUI,
     handleScoreReport,
-    handleClose
+    handleClose,
+    handleOnExited
   }
 }

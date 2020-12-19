@@ -49,11 +49,13 @@ export default function Tournament (props) {
 
       content = (
         <Container maxWidth='lg' className={classes.root}>
-          <Card variant='outlined' className={`${classes.card} ${classes.tournamentInfoContainer}`}>
-            <TournamentInfo />
-          </Card>
           <AdminPanel />
-          <Card variant='outlined' className={classes.card}>
+          <Card variant='outlined' className={`${classes.card}`}>
+            <div className={`${classes.tournamentInfoContainer}`}>
+              <TournamentInfo />
+            </div>
+            <br />
+            <br />
             <Suspense fallback={<Spinner />}>
               <SingleEliminationBracket />
             </Suspense>

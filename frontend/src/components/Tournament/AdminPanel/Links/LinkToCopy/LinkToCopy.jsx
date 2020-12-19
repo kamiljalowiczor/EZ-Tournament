@@ -30,6 +30,10 @@ export default function LinkToCopy ({ link }) {
     setTimeout(() => { setTooltipOpen(false) }, 1500)
   }
 
+  function getLinkValue () {
+    return window.location.origin + link
+  }
+
   return (
     <FormControl
       className={classes.link}
@@ -61,7 +65,7 @@ export default function LinkToCopy ({ link }) {
       />
       <textarea
         ref={textArea}
-        defaultValue={window.location.href}
+        defaultValue={getLinkValue()}
         className={classes.offscreen}
         aria-hidden='true'
       />

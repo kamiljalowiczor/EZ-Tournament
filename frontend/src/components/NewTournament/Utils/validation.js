@@ -21,7 +21,6 @@ export function isFormTouched (fieldControls) {
 }
 
 export function checkValidity (value, rules) {
-  console.log(value, rules.maxLength)
   let isValid = true
   if (!rules) {
     return true

@@ -25,7 +25,7 @@ function SingleEliminationBracket () {
   const { rounds, progressStatus, winner } = useSelector((state) => state.tournament.bracket)
   const { adminLink } = useSelector((state) => state.tournament.tournamentInfo)
   const { isUpdatingBracket, updateError } = useSelector((state) => state.tournament)
-  const roundsAmount = rounds.length
+  const roundsAmount = rounds ? rounds.length : 0
 
   const bracketCardTitle = (
     <Typography
@@ -144,7 +144,7 @@ function SingleEliminationBracket () {
   let prevRoundTopMargin = 0
 
   const firstRoundMatchesMargin = 32 // in px
-  const firstMarginTop = 160 / 4 - 16 // wysokosc pary / 4 - jeden zawodnik
+  const firstMarginTop = 24 // wysokosc pary / 4 - jeden zawodnik
   const width = 237 * (roundsAmount) + 200 // roundColumnWidth * roundsAmount + 200 (200 czyli szerokosc winnera)
   const height = roundsAmount === 1 ? 192 + 50 : Math.pow(2, roundsAmount) / 4 * 192 + 50 // 160 to wysokosc dwoch meczow obok siebie + 32 margin bottom, + 50 zeby round header sie zmiescil
 

@@ -45,7 +45,7 @@ export default function LinkToCopy ({ link }) {
         endAdornment={
           <InputAdornment position='end'>
             <Tooltip
-              title='Copied to clipboard!'
+              title={t('copied')}
               PopperProps={{
                 disablePortal: true
               }}

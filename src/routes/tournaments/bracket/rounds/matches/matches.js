@@ -26,13 +26,14 @@ async function reportMatchScore (req, reply) {
   }
 
   let rounds = []
-  await axios.get(`${databaseUrl}/tournaments/${tournamentId}/bracket/rounds.json`)
+  await axios.get(`${databaseUrl}/tournaments/${tournamentId}/bracket/rounds.json?access_token=${this.accessTokenDecorator.get('value')}`)
     .then((res) => {
       rounds = res.data
     })
-    .catch(() => {
-      payload = { error: '502 Bad Gateway' }
-      reply.code(502)
+    .catch((err) => {
+      payload = { error: err.statusText || 'Bad Request' }
+      reply.code(err.status || 400)
+      reply.send()
     })
   if (reply.sent) return
 
@@ -54,7 +55,7 @@ async function reportMatchScore (req, reply) {
       progressStatus: tournamentStatusTypes.FINISHED
     }
 
-    await axios.patch(`${databaseUrl}/tournaments/${tournamentId}/bracket.json`, endTournamentPayload)
+    await axios.patch(`${databaseUrl}/tournaments/${tournamentId}/bracket.json?access_token=${this.accessTokenDecorator.get('value')}`, endTournamentPayload)
       .then(() => {
         payload = {
           ...endTournamentPayload
@@ -70,7 +71,7 @@ async function reportMatchScore (req, reply) {
 
   const updatedRounds = updateScores(rounds, roundId, matchId, matchPlayerSlot, winnerData, isFinal)
 
-  await axios.patch(`${databaseUrl}/tournaments/${tournamentId}/bracket.json`, { rounds: updatedRounds })
+  await axios.patch(`${databaseUrl}/tournaments/${tournamentId}/bracket.json?access_token=${this.accessTokenDecorator.get('value')}`, { rounds: updatedRounds })
     .then(() => {
       payload = {
         ...endTournamentPayload,

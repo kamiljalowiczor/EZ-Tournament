@@ -61,7 +61,7 @@ export default function useFormValidation () {
   }
 
   function checkUrl (value) {
-    const re = new RegExp(/^[a-zA-Z0-9\-_]{3,20}$/)
+    const re = new RegExp(/^[a-zA-Z0-9\-_]{5,20}$/)
 
     return re.test(value)
   }

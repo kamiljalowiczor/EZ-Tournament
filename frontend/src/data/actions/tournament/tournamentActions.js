@@ -40,10 +40,9 @@ export function newTournamentUrlChangeStart () {
   }
 }
 
-export function newTournamentUrlChangeAvailable (url) {
+export function newTournamentUrlChangeAvailable () {
   return {
-    type: tournamentActionTypes.NEW_TOURNAMENT_URL_CHANGE_AVAILABLE,
-    url: url
+    type: tournamentActionTypes.NEW_TOURNAMENT_URL_CHANGE_AVAILABLE
   }
 }
 

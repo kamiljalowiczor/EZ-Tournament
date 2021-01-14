@@ -41,7 +41,7 @@ function RoundColumn (props) {
   }
 
   return (
-    <Grid style={{ minWidth: isWinner ? '200px' : '237px' }}>
+    <Grid style={{ minWidth: isWinner ? '202px' : '237px' }}>
       <div>
         <Paper variant='outlined' className={classes.roundTab}>
           <Typography>

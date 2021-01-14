@@ -21,7 +21,7 @@ export default function NewTournament () {
   return (
     <Container maxWidth='md' className={classes.root}>
       <Card variant='outlined' className={classes.card}>
-        <Typography variant='h2'>
+        <Typography variant='h3'>
           {t('form:new-tournament')}
         </Typography>
         <Typography variant='h6'>

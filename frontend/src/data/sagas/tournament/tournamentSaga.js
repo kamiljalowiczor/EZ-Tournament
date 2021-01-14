@@ -67,14 +67,19 @@ export function * newTournamentSubmitSaga (action) {
 
 export function * newTournamentUrlChangeSaga (action) {
   yield put(newTournamentUrlChangeStart())
-  try {
-    const { isUrlAvailable } = yield call(loadTournament, action.url, null, true)
 
-    isUrlAvailable
-      ? yield put(newTournamentUrlChangeAvailable(action.url))
-      : yield put(newTournamentUrlChangeNotAvailable('url taken'))
-  } catch (error) {
-    yield put(newTournamentUrlChangeNotAvailable(error))
+  if (action.url.length === 0) {
+    yield put(newTournamentUrlChangeAvailable(action.url))
+  } else {
+    try {
+      const { isUrlAvailable } = yield call(loadTournament, action.url, null, true)
+
+      isUrlAvailable
+        ? yield put(newTournamentUrlChangeAvailable())
+        : yield put(newTournamentUrlChangeNotAvailable())
+    } catch (error) {
+      yield put(newTournamentUrlChangeNotAvailable(error))
+    }
   }
 }
 
@@ -95,8 +100,6 @@ export function * loadTournamentSaga () {
     if (result.data instanceof Error) {
       throw result.data
     }
-
-    console.log(result.data)
 
     if (!result.timeout) {
       yield put(loadTournamentSuccess(result.data))

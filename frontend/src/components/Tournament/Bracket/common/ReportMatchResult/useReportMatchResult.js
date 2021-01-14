@@ -25,7 +25,7 @@ export default function useReportMatchResult (props) {
   const [score2, setScore2] = useState(0)
   const [winner, setWinner] = useState(null)
   const [resultText, setResultText] = useState(`${t('tournament:draws')}`)
-  const [dummyIsScoreReportedFlag, setDummyIsScoreReportedFlag] = useState(isScoreReported) // to jest po to zeby modal sobie mogl spokojnie zniknac po sukcesie przy reporcie wyniku xD
+  const [dummyIsScoreReportedFlag, setDummyIsScoreReportedFlag] = useState(isScoreReported) // zeby modal sobie mogl spokojnie zniknac po sukcesie przy reporcie wyniku
 
   useEffect(() => {
     setIsReadyToReport(participant1 && participant1.name && participant2 && participant2.name)

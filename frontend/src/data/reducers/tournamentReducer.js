@@ -47,16 +47,31 @@ function newTournamentSubmitStart (state, action) {
 }
 
 function newTournamentSubmitSuccess (state, action) {
+  const data = action.tournamentData
+  let bracket = action.tournamentData.bracket
+  let rounds = bracket.rounds
+  let participants = bracket.participants
+
+  if (!rounds) {
+    rounds = []
+  }
+  if (!participants) {
+    participants = []
+  }
+
+  bracket = {
+    ...bracket,
+    rounds,
+    participants
+  }
+
   return {
     ...initialState,
-    tournamentInfo: {
-      ...action.tournamentData.info
-    },
-    bracket: {
-      ...action.tournamentData.bracket
-    },
-    isUrlAvailable: false,
+    tournamentInfo: data.info,
+    bracket,
+    isUrlAvailable: true,
     isSubmittingNewTournament: false,
+    isUrlCheckInProgress: false,
     isRedirectedFromForm: true,
     isLoading: false
   }
@@ -138,10 +153,10 @@ function loadTournamentSuccess (state, action) {
   let rounds = bracket.rounds
   let participants = bracket.participants
 
-  if (!data.bracket.rounds) {
+  if (!rounds) {
     rounds = []
   }
-  if (!data.bracket.participants) {
+  if (!participants) {
     participants = []
   }
 

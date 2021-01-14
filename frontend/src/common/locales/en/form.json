@@ -5,7 +5,7 @@
   "bracket-format": "Bracket format",
   "form-title": "Tournament information",
 
-  "field-required": "This field is required.",
+  "field-required": "This field is required. ",
   "url-taken": "This URL is already taken. Please try a different one.",
   "url-invalid": "Custom URL can't contain spaces and special characters other than - and _. ",
   "invalid-length": "Value must be at least {{minLength}} and at most {{maxLength}} characters long.",

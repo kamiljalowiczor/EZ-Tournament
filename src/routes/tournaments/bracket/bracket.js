@@ -6,11 +6,10 @@ async function updateBracket (req, reply) {
   reply.header('Cache-Control', 'no-store, max-age=0')
   const databaseUrl = this.config.DATABASE_URL
 
-  const tournamentId = req.params.id
+  const tournamentId = req.params.tournamentId
   const participants = req.body.participants
   const isStartTournamentRequest = req.body.isStartTournamentRequest
-  const roundsAmount = bracketUtils.getAmountOfRounds(participants.length)
-  const rounds = bracketUtils.populateRoundsArrayWithPlayers(participants, roundsAmount)
+  const rounds = bracketUtils.createBracketData(participants)
 
   let payload = {
     rounds,
@@ -18,7 +17,7 @@ async function updateBracket (req, reply) {
     progressStatus: isStartTournamentRequest ? tournamentStatusTypes.IN_PROGRESS : tournamentStatusTypes.NOT_STARTED
   }
 
-  await axios.put(`${databaseUrl}/tournaments/${tournamentId}/bracket.json`, payload)
+  await axios.put(`${databaseUrl}/tournaments/${tournamentId}/bracket.json?access_token=${this.accessTokenDecorator.get('value')}`, payload)
     .then(() => {
       reply.code(200)
     })

@@ -12,6 +12,7 @@ export default function useMatch (props) {
 
   const [isModalOpen, setModalOpen] = useState(false)
   const { rounds, progressStatus } = useSelector((state) => state.tournament.bracket)
+  const { adminLink } = useSelector((state) => state.tournament.tournamentInfo)
 
   const isMatchInBracket = useCallback(() => {
     return rounds && rounds[roundId] && rounds[roundId].matches && rounds[roundId].matches[matchId]
@@ -51,7 +52,8 @@ export default function useMatch (props) {
 
   const isClickable =
     (getParticipant(0).name || getParticipant(1).name) &&
-    progressStatus === tournamentStatusTypes.IN_PROGRESS
+    progressStatus === tournamentStatusTypes.IN_PROGRESS &&
+    adminLink
 
   const openModal = () => {
     if (!isClickable) {

@@ -20,6 +20,7 @@ import _ from 'lodash'
 import { useTranslation } from 'react-i18next'
 import i18n from '../../i18n'
 import Spinner from '../Utils/Spinner'
+import { checkUrl } from './Utils/validation'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,9 +59,8 @@ export default function NewTournamentForm (props) {
   }, [isUrlAvailable, isUrlCheckInProgress])
 
   const debouncedUrlCheck = React.useCallback(_.debounce((value) => {
-    if (value.length > 4) {
-      dispatch(newTournamentUrlChange(value))
-    }
+    value = value.length > 4 ? value : ''
+    dispatch(newTournamentUrlChange(value))
   }, 500), [])
 
   i18n.on('languageChanged', () => {
@@ -93,7 +93,9 @@ export default function NewTournamentForm (props) {
 
   function onCustomUrlValueChange (value, fieldName) {
     value = value.replace(/\s+$/, '')
-    debouncedUrlCheck(value)
+    if (checkUrl(value)) {
+      debouncedUrlCheck(value)
+    }
 
     const updatedFieldControls = getUpdatedCustomUrl(value, fieldName, fieldControls)
     setFieldControls(updatedFieldControls)
@@ -116,6 +118,7 @@ export default function NewTournamentForm (props) {
     if (isFormValid(bracketFormat, fieldControls) && !isUrlCheckInProgress) {
       const tournamentData = getInputFieldsData(bracketFormat, fieldControls)
       dispatch(newTournamentSubmit(tournamentData))
+      setShouldDisplayDataIncorrectLabel(false)
     } else {
       updateErrorMessages()
     }
@@ -162,7 +165,7 @@ export default function NewTournamentForm (props) {
   return (
     <div className={classes.root}>
       <Box>
-        <Typography variant='h4' align='center'>{t('form:form-title')}</Typography>
+        {/* <Typography variant='h4' align='center'>{t('form:form-title')}</Typography> */}
         {formArray.map(field => (
           mapField(field)
         ))}

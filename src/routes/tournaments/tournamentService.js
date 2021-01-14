@@ -17,12 +17,13 @@ async function newTournament (req, reply) {
   if (!req.body.customUrl) {
     let retriesAmount = 0
     while (true) {
-      const checkUrlRes = await axios.get(`${databaseUrl}/tournaments/${publicLink}.json`)
+      const checkUrlRes = await axios.get(`${databaseUrl}/tournaments/${publicLink}.json?access_token=${this.accessTokenDecorator.get('value')}`)
+
       if (!checkUrlRes.data) {
         break
       }
 
-      if (retriesAmount === 5) {
+      if (retriesAmount === 4) {
         reply.code(408)
         payload = { error: '408 Request Timeout' }
         reply.send(payload)
@@ -45,23 +46,21 @@ async function newTournament (req, reply) {
       contact: req.body.contact
     },
     bracket: {
-      progressStatus: tournamentStatusTypes.NOT_STARTED,
-      roundsAmount: 0,
-      participants: [],
-      rounds: []
+      progressStatus: tournamentStatusTypes.NOT_STARTED
     }
   }
 
   payload = tournamentData
 
-  await axios.put(`${databaseUrl}/tournaments/${publicLink}.json`, tournamentData)
+  await axios.put(`${databaseUrl}/tournaments/${publicLink}.json?access_token=${this.accessTokenDecorator.get('value')}`, tournamentData)
     .then(() => {
       payload = tournamentData
       reply.code(200)
     })
-    .catch(() => {
-      payload = { error: '502 Bad Gateway' }
-      reply.code(502)
+    .catch((err) => {
+      payload = { error: err.statusText || 'Bad Request' }
+      reply.code(err.status || 400)
+      reply.send()
     })
 
   reply.send(payload)
@@ -72,13 +71,14 @@ async function getTournament (req, reply) {
   let payload = null
   const databaseUrl = this.config.DATABASE_URL
 
-  const tournamentId = req.params.id
+  const tournamentId = req.params.tournamentId
 
   const isUrlCheck = req.query.isUrlCheck
   const adminId = req.query.adminId
 
   let tournamentData
-  await axios.get(`${databaseUrl}/tournaments/${tournamentId}.json`, { headers: { 'Content-Type': 'text/plain' } })
+
+  await axios.get(`${databaseUrl}/tournaments/${tournamentId}.json?access_token=${this.accessTokenDecorator.get('value')}`, { headers: { 'Content-Type': 'text/plain' } })
     .then((dbRes) => {
       tournamentData = dbRes.data
 
@@ -88,6 +88,11 @@ async function getTournament (req, reply) {
           : { isUrlAvailable: true }
         reply.code(200)
         reply.send(payload)
+      } else if (!tournamentData && !isUrlCheck) {
+        reply.code(404)
+        reply.send({
+          error: 'Data not found'
+        })
       }
     })
     .catch((err) => {
@@ -102,8 +107,6 @@ async function getTournament (req, reply) {
       tournamentData.info.adminLink = ''
     }
   }
-
-  console.log(tournamentData.bracket && tournamentData.bracket.rounds)
 
   payload = tournamentData
   reply.send(payload)

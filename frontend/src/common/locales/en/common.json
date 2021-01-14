@@ -5,5 +5,6 @@
   "copy": "Copy",
   "something-went-wrong": "Something went wrong. Possibly no such tournament exists.",
   "back-to-main-page": "Back to main page",
-  "new-tournament": "NEW TOURNAMENT"
+  "new-tournament": "NEW TOURNAMENT",
+  "copied": "Copied to clipboard"
 }

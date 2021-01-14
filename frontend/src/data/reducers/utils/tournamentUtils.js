@@ -1,9 +1,12 @@
 import produce from 'immer'
 
 export function getParticipantsArray (inputValue) {
-  const participantsArray = inputValue.trim().replace(/,/g, '\n').split('\n')
+  console.log(inputValue)
+  const participantsArray = inputValue.trim().replace(/\n\n/g, '\n').replace(/,/g, '\n').split('\n')
+  console.log(inputValue.trim().replace(/,/g, '\n'))
+  console.log(participantsArray)
   for (let i = 0; i < participantsArray.length; i++) {
-    participantsArray[i] = participantsArray[i].trim().substring(0, 15).replace(/\s\s+/g, ' ')
+    participantsArray[i] = participantsArray[i].trim().replace(/\s\s+/g, ' ').substring(0, 15)
   }
 
   return participantsArray.filter(Boolean)

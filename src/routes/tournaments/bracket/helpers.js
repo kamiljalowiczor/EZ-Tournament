@@ -55,7 +55,7 @@ function isMatchPermamentlyEmpty (prevRound, matchId) {
   return lastRoundUpperMatch.isEmpty && lastRoundLowerMatch.isEmpty
 }
 
-function populateRoundsArrayWithPlayers (participantsArray) {
+function createBracketData (participantsArray) {
   const rounds = []
   const roundsAmount = getAmountOfRounds(participantsArray.length)
 
@@ -66,7 +66,7 @@ function populateRoundsArrayWithPlayers (participantsArray) {
       let players = []
       let isMatchEmpty = false
 
-      if (i === roundsAmount) { // dla pierwszej rundy wypelniam zawodnikami a pozniej juz empty
+      if (i === roundsAmount) {
         players = getFirstRoundMatchPlayers(participantsArray, j)
         isMatchEmpty = !players[0].name && !players[1].name
 
@@ -74,23 +74,18 @@ function populateRoundsArrayWithPlayers (participantsArray) {
       } else {
         const prevRoundId = roundsAmount - i - 1
         const prevRound = rounds[prevRoundId]
-        const notFirstRoundMatch = getMatchObjectsForFutureRoundsMatches(prevRound, currentMatchId)
+        const futureRoundMatch = getMatchObjectsForFutureRoundsMatches(prevRound, currentMatchId)
 
-        currentRoundMatches.push(notFirstRoundMatch)
+        currentRoundMatches.push(futureRoundMatch)
       }
 
       currentMatchId++
     }
     rounds.push({
       id: roundsAmount - i,
-      isFinal: false,
+      isFinal: i === 1,
       matches: currentRoundMatches
     })
-  }
-
-  rounds[rounds.length - 1] = {
-    ...rounds[rounds.length - 1],
-    isFinal: true
   }
 
   return rounds
@@ -98,5 +93,5 @@ function populateRoundsArrayWithPlayers (participantsArray) {
 
 module.exports = {
   getAmountOfRounds,
-  populateRoundsArrayWithPlayers
+  createBracketData
 }

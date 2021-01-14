@@ -27,12 +27,10 @@ export default function Tournament (props) {
   const classes = useStyles()
   const dispatch = useDispatch()
   const {
-    // tournamentData,
-    // setTournamentData,
     isLoading,
     isRedirectedFromForm,
     loadingError
-    // getDataAfterRedirectFromForm
+
   } = useTournament()
 
   useEffect(() => {

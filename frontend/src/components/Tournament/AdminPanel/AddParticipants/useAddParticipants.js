@@ -17,7 +17,7 @@ export default function useAddParticipants () {
   }
 
   function onParticipantsInputChange (e) {
-    const value = e.target.value.replace(/\n\n/g, '\n')
+    const value = e.target.value
     dispatch(participantInputChangeAction(value))
   }
 

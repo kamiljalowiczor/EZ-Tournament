@@ -5,7 +5,7 @@
   "bracket-format": "Format drabinki",
   "form-title": "Informacje o turnieju",
 
-  "field-required": "To pole jest wymagane.",
+  "field-required": "To pole jest wymagane. ",
   "url-taken": "Ten adres URL jest już zajęty. Spróbuj wybrać inny.",
   "url-invalid": "Adres URL nie może zawierać spacji oraz znaków specjalnych innych niż - oraz _. ",
   "invalid-length": "Wartość tego pola musi mieć przynajmniej {{minLength}} i maksymalnie {{maxLength}} znaków.",
@@ -18,8 +18,8 @@
   "placeholder-url": "Wprowadź swój unikalny link do turnieju",
   "label-description": "Opis turnieju",
   "placeholder-description": "Wprowadź informacje opisujące ten turniej (np. data, gra, zasady, nagrody)",
-  "label-host": "Host",
-  "placeholder-host": "Kto jest hostem turnieju?",
-  "label-contact": "Kontakt z hostem",
-  "placeholder-contact": "W jaki sposób uczestnicy będą mogli się z Tobą skontaktować?"
+  "label-host": "Organizator",
+  "placeholder-host": "Kto jest organizatorem turnieju?",
+  "label-contact": "Kontakt z organizatorem",
+  "placeholder-contact": "W jaki sposób uczestnicy będą mogli skontaktować się z organizatorem?"
 }

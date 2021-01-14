@@ -2,11 +2,12 @@ const { google } = require('googleapis')
 const fp = require('fastify-plugin')
 
 module.exports = fp(function (fastify, options, next) {
-  fastify.decorate('accessTokenDecorator', new Map());
+  fastify.decorate('accessTokenDecorator', new Map())
+  const jwtClientEmail = fastify.config.JWT_CLIENT_EMAIL
+  const jwtPrivateKey = fastify.config.JWT_PRIVATE_KEY.replace(/\\n/gm, '\n');
 
   (function getJWTToken () {
     // Load the service account key JSON file.
-    const serviceAccount = require('../../../firebase-auth.json')
 
     // Define the required scopes.
     const scopes = [
@@ -16,9 +17,9 @@ module.exports = fp(function (fastify, options, next) {
 
     // Authenticate a JWT client with the service account.
     const jwtClient = new google.auth.JWT(
-      serviceAccount.client_email,
+      jwtClientEmail,
       null,
-      serviceAccount.private_key,
+      jwtPrivateKey,
       scopes
     )
 

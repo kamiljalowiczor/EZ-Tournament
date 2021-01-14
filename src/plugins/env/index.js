@@ -4,9 +4,17 @@ const fp = require('fastify-plugin')
 module.exports = fp(function (fastify, options, next) {
   const schema = {
     type: 'object',
-    required: ['DATABASE_URL'],
+    required: ['DATABASE_URL', 'JWT_CLIENT_EMAIL', 'JWT_PRIVATE_KEY'],
     properties: {
       DATABASE_URL: {
+        type: 'string',
+        default: ''
+      },
+      JWT_CLIENT_EMAIL: {
+        type: 'string',
+        default: ''
+      },
+      JWT_PRIVATE_KEY: {
         type: 'string',
         default: ''
       }
@@ -27,6 +35,5 @@ module.exports = fp(function (fastify, options, next) {
     .ready((err) => {
       if (err) console.error(err)
     })
-
   next()
 })

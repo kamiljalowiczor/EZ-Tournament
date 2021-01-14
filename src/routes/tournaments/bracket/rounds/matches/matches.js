@@ -37,19 +37,19 @@ async function reportMatchScore (req, reply) {
     })
   if (reply.sent) return
 
-  // HANDLE THE SCORE THAT USER IS REPORTING RESULT FOR
+  // update the match that user is reporting the result for
   rounds[roundId].matches[matchId] = {
     ...rounds[roundId].matches[matchId],
     ...matchResultPayload
   }
 
-  // RECOGNIZE WINNER
+  // recognize winner
   const winnerData = getWinnerData(player1Data, player2Data)
 
   let endTournamentPayload = {}
 
   if (isFinal) {
-    // END TOURNAMENT
+    // final match, end the tournament
     endTournamentPayload = {
       winner: { ...winnerData, score: 'GG' },
       progressStatus: tournamentStatusTypes.FINISHED
@@ -69,6 +69,7 @@ async function reportMatchScore (req, reply) {
     if (reply.sent) return
   }
 
+  // do post match score update logic
   const updatedRounds = updateScores(rounds, roundId, matchId, matchPlayerSlot, winnerData, isFinal)
 
   await axios.patch(`${databaseUrl}/tournaments/${tournamentId}/bracket.json?access_token=${this.accessTokenDecorator.get('value')}`, { rounds: updatedRounds })

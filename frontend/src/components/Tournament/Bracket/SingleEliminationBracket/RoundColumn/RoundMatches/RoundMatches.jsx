@@ -2,7 +2,7 @@ import React from 'react'
 import { Box } from '@material-ui/core'
 import RoundMatchesConnector from '../../RoundMatchesConnector'
 
-// ten komponent renderuje 2 mecze jednoczesnie zeby w nastepnym komponencie (RoundMatchesConnector) latwo mozna bylo je ze soba laczyc przez linie
+// matches are rendered in pairs so they can be easily connected with svg
 
 function RoundMatches (props) {
   function getMatchPairsToNextRoundArray (matches) {

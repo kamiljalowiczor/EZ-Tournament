@@ -6,7 +6,7 @@ function getWinnerData (player1Data, player2Data) {
     : { ...player2Data, score: 0 }
 }
 
-// not filled bo sprawdzane jest tez czy juz tam nie ma w tym meczu lucky lucka zgloszonego
+// 'isNotFilled' because at this point match can already have a lucky loser
 function isNotFilledLuckyLoserMatch (rounds, roundId, match) {
   const prevRound = rounds[roundId - 1]
   const matchId = match.id
@@ -24,8 +24,8 @@ function isNotFilledLuckyLoserMatch (rounds, roundId, match) {
   if (prevRound && !rounds[roundId].isFinal) {
     const prevRoundMatchUpper = prevRound.matches[matchId * 2]
     const prevRoundMatchLower = prevRound.matches[(matchId + 0.5) * 2]
-    // zalozenie jest takie ze jezeli ktorys z meczow z pary w ostatniej rundzie jest empty to bedzie luckyloser dla meczu tego co mam matchId tutaj
 
+    // if a match from the previous round is empty, then there is going to be a lucky loser for the match determined by matchId
     if (prevRoundMatchUpper.isEmpty) {
       return { matchId, luckyLoserSlot: 0 }
     } else if (prevRoundMatchLower.isEmpty) {
@@ -49,11 +49,13 @@ function isAnyLuckyLoserMatchInRound (rounds, roundId, matches) {
 
 function isReportingLastMatchInRound (rounds, roundId, matches) {
   for (const match of matches) {
-    if (match.isEmpty) { // empty zawsze bedzie na dole wiec jezeli doszlismy do tego momentu i nie bylo walkowera to juz nie bedzie
+    // empty matches are always positioned as last in the bracket
+    // if there wasn't a lucky loser up until this point then return true
+    if (match.isEmpty) {
       return true
     }
 
-    if (!match.isScoreReported && !isNotFilledLuckyLoserMatch(rounds, roundId, match)) { // jezeli nie jest zaraportowany to tez nie trzeba dalej szukac - musza byc wszystkie zaraportowane excluding luckylosermatch
+    if (!match.isScoreReported && !isNotFilledLuckyLoserMatch(rounds, roundId, match)) {
       return false
     }
   }
@@ -76,16 +78,14 @@ function getLuckyLoser (matches, luckyLoserMatchId) {
   })
 
   potentialLuckyLosers = _.shuffle(potentialLuckyLosers)
-  // ^^ cheeky linia ale wytlumaczenie:
-  // przemieszanie calej tablicy na poczatku jest po to zeby nie faworyzowac zadnego gracza w przypadku gdy pare osob bedzie mialo takie samo wyniki w rundzie
-  // jezeli bym wybieral lucky losera na podstawie:
-  // if (luckyloser.score === player.score) { math.random(ktory wygral) }
-  // to bylo by to kompletnie bez sensu bo to by oznaczalo faworyzowanie ostatniego gracza z drabinki, ktory uzyskal taki sam rezultat jak paru innych
-  // ci wczesniejsi by musieli 'wygrac' pare walk 50/50, a ten ostatni tylko jedna
+  // shuffling the entire array in the beginning makes sure that the choice of a lucky loser is fair, even if multiple potential lucky losers got the same scores in the same round
+  // consider:
+  // if (luckyLoser.score === player.score) { luckyLoser = getRandomWinner(luckyLoser.name, player.name) }
+  // this way would always favor last placed player in round, because he would have to get determined by this function as a winner, only one time, whereas previous players would need multiple random 50/50 'wins'
 
   let luckyLoser = potentialLuckyLosers[0]
 
-  for (let i = 1; i < potentialLuckyLosers.length; i++) { // zaczynam od 1 bo zerowy jest od razu jako luckyLoser wiec nie ma sensu go z samym soba porywnywac
+  for (let i = 1; i < potentialLuckyLosers.length; i++) {
     const loser = potentialLuckyLosers[i]
 
     if (loser.score > +luckyLoser.score) {
@@ -135,14 +135,15 @@ function updateLuckyLoser (rounds, roundId) {
 }
 
 function updateScores (rounds, roundId, matchId, matchPlayerSlot, winnerData, isFinal) {
-  // NO NEXT MATCH JUST RETURN
+  // no next match, so just return
   if (isFinal) {
     return rounds
   }
 
-  // UPDATE THE SCORE FOR THE NEXT MATCH
+  // check and potentially update lucky loser
   rounds = updateLuckyLoser(rounds, roundId)
 
+  // update the coresponding match in the next round
   const nextRoundId = roundId + 1
   const nextMatchId = Math.floor(matchId / 2)
 
@@ -152,7 +153,6 @@ function updateScores (rounds, roundId, matchId, matchPlayerSlot, winnerData, is
 }
 
 function updateNextMatch (rounds, winnerData, nextRoundId, nextMatchId, matchPlayerSlot) {
-  // NO SPECIAL CONDITIONS, SO JUST UPDATE THE NEXT MATCH IN LINE AS USUAL
   rounds[nextRoundId].matches[nextMatchId].players[matchPlayerSlot] = winnerData
 
   if (isPlayerFromPairWaiting(rounds[nextRoundId].matches[nextMatchId].players)) {
@@ -167,7 +167,6 @@ function updateNextMatch (rounds, winnerData, nextRoundId, nextMatchId, matchPla
 }
 
 module.exports = {
-  // updateWalkoverMatches,
   getWinnerData,
   updateScores
 }

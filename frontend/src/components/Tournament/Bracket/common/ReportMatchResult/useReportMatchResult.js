@@ -25,7 +25,7 @@ export default function useReportMatchResult (props) {
   const [score2, setScore2] = useState(0)
   const [winner, setWinner] = useState(null)
   const [resultText, setResultText] = useState(`${t('tournament:draws')}`)
-  const [dummyIsScoreReportedFlag, setDummyIsScoreReportedFlag] = useState(isScoreReported) // zeby modal sobie mogl spokojnie zniknac po sukcesie przy reporcie wyniku
+  const [dummyIsScoreReportedFlag, setDummyIsScoreReportedFlag] = useState(isScoreReported) // delay default modal animation after successful score report
 
   useEffect(() => {
     setIsReadyToReport(participant1 && participant1.name && participant2 && participant2.name)
@@ -105,7 +105,6 @@ export default function useReportMatchResult (props) {
       setScore1(0)
       setScore2(0)
       handleResultUpdate(score1, score2)
-      // setReportResultText(null)
       dispatch(cleanReportFlags())
       setDummyIsScoreReportedFlag(isScoreReported)
     }, 250)
@@ -120,8 +119,6 @@ export default function useReportMatchResult (props) {
     isReportingMatch,
     reportMatchError,
     dummyIsScoreReportedFlag,
-    // reportResultText,
-    // reportResultTitle,
     handleScore1Change,
     handleScore2Change,
     handleScoreReport,

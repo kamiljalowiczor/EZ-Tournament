@@ -34,10 +34,11 @@ export default function useMatch (props) {
 
   const isGoingToBeWalkover = useCallback(() => {
     const prevRoundId = roundId - 1
-    // czy jest pierwsza runda || czy ma obu zawodnikow
+
     if (!rounds[prevRoundId] || (getParticipant(0).name && getParticipant(1).name)) {
       return false
     }
+
     const lastRoundUpperMatchId = matchId * 2
     const lastRoundLowerMatchId = (matchId + 0.5) * 2
 

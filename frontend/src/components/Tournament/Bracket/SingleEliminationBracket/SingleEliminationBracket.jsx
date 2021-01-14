@@ -143,10 +143,10 @@ function SingleEliminationBracket () {
 
   let prevRoundTopMargin = 0
 
-  const firstRoundMatchesMargin = 32 // in px
-  const firstMarginTop = 24 // wysokosc pary / 4 - jeden zawodnik
-  const width = 237 * (roundsAmount) + 200 // roundColumnWidth * roundsAmount + 200 (200 czyli szerokosc winnera)
-  const height = roundsAmount === 1 ? 192 + 50 : Math.pow(2, roundsAmount) / 4 * 192 + 50 // 160 to wysokosc dwoch meczow obok siebie + 32 margin bottom, + 50 zeby round header sie zmiescil
+  const firstRoundMatchesMargin = 32 // px
+  const firstMarginTop = 24
+  const width = 237 * (roundsAmount) + 200 // roundColumnWidth * roundsAmount + 200 (200 is the width of winner)
+  const height = roundsAmount === 1 ? 96 + 50 : Math.pow(2, roundsAmount) / 4 * 192 + 50 // 96 = 1 match + bottom margin, 50 = header, 192 = match pair + bottom margin
 
   return (
     <>

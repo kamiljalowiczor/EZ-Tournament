@@ -102,7 +102,9 @@ function SingleEliminationBracket () {
 
     if (rounds[roundsAmount - 2]) {
       const semiFinals = rounds[roundsAmount - 2].matches
-      if (isSamePlayerInBothSemiFinals(semiFinals, secondPlacePlayer.id)) {
+      if (isSamePlayerInBothSemiFinals(semiFinals, secondPlacePlayer.id) ||
+        isSamePlayerInBothSemiFinals(semiFinals, winner.id)
+      ) {
         thirdPlacePlayer1 =
           getPlayerFromMatchNotEqualTo(semiFinals[0], winner.id, secondPlacePlayer.id) ||
           getPlayerFromMatchNotEqualTo(semiFinals[1], winner.id, secondPlacePlayer.id)

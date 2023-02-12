@@ -15,7 +15,7 @@
     "fastify-swagger": "^2.5.0",
     "googleapis": "^66.0.0",
     "i18next": "^19.7.0",
-    "immer": "^8.0.0",
+    "immer": "^9.0.6",
     "lodash": "^4.17.20",
     "nodemon": "^2.0.20",
     "react": "^16.12.0",

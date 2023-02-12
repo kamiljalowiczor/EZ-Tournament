@@ -9,7 +9,7 @@
     "@fortawesome/react-fontawesome": "^0.1.13",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
-    "axios": "^0.20.0",
+    "axios": "^0.21.2",
     "fastify": "^2.15.3",
     "fastify-env": "^1.0.1",
     "fastify-swagger": "^2.5.0",

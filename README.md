@@ -1,1 +1,1 @@
-Engineer's thesis project. The simplest tournament managment website. https://ez-tournament.herokuapp.com/
+Engineer's thesis project. Discontinued. [Visual demo](https://www.youtube.com/watch?v=JSsElHs0uI8)
